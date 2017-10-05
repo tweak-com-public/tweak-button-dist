@@ -1,0 +1,21 @@
+{
+  "name": "tweak-button",
+  "version": "1.0.0-alpha.0",
+  "description": "Tweak Button integration",
+  "main": "production/sdk.min.js",
+  "keywords": [
+    "tweak",
+    "button",
+    "iframe",
+    "embed",
+    "modal",
+    "override",
+    "tweak builder"
+  ],
+  "author": "Tweak",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/thevoucherlink/tweak-button-dist"
+  }
+}
