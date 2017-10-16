@@ -52199,12 +52199,12 @@ onloadCSS(stylesheet, function() {
   Button.make();
 });
 
-},{"./lib":465,"fg-loadcss":256}],456:[function(require,module,exports){
+},{"./lib":462,"fg-loadcss":256}],456:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 04:17:30
+ * @Last modified time: 2017-10-05 04:02:42
  */
 
 'use strict';
@@ -52225,8 +52225,6 @@ var extend = require('extend');
 var url = require('url');
 // Humps
 var humps = require('humps');
-// Button
-var Button = require('./Button');
 // ModelBridge
 var ModelBridge = require('./models').ModelBridge;
 
@@ -52308,6 +52306,7 @@ function Bridge(bridgeData) {
 
 // Extend Bridge with ModelBridge
 Bridge = ModelBridge(Bridge);
+
 /**
  * Bridge config
  * @type   {object}
@@ -52836,6 +52835,8 @@ Bridge.prototype.sockets = {};
 Bridge = require('./bridges/loading')(Bridge);
 // Builder
 Bridge = require('./bridges/builder')(Bridge);
+// Done Confirm
+Bridge = require('./bridges/done-confirm')(Bridge);
 
 /**
  * Setup TPLs basd on Bridge.tpls list
@@ -52940,826 +52941,7 @@ Bridge.prototype.onMemberRegister = function(e) {
  */
 module.exports = Bridge;
 
-},{"./":465,"./Button":457,"./bridges/builder":461,"./bridges/loading":462,"./logger":466,"./models":470,"bellhop-iframe":73,"detect-node":155,"extend":254,"humps":272,"string-template":406,"unique-selector":420,"url":423,"uuid/v4":431}],457:[function(require,module,exports){
-/**
- * @Author: Matteo Zambon <Matteo>
- * @Date:   2017-09-20 11:11:27
- * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 04:08:12
- */
-
-'use strict';
-
-// Logger
-var logger = require('./logger');
-// Async - Waterfall
-var asyncWaterfall = require('async/waterfall');
-// Async - Map - Limit
-var asyncMapLimit = require('async/mapLimit');
-// Modal
-var Modal = require('./Modal');
-// Override
-var Override = require('./Override');
-// Bridge
-var Bridge = require('./Bridge');
-// ModelButton
-var ModelButton = require('./models').ModelButton;
-
-/**
- * Button constructor
- * @param       {object} buttonData                Data to define a new Button instance
- * @param       {string} buttonData.id             Button unique identification
- * @param       {string} buttonData.windowType     Type of windows where to open the HTML Builder
- * @param       {string} buttonData.bridge         Data to define a new Bridge instance (check Bridge constructor)
- * @param       {string} buttonData.modal          Data to define a new Modal instance (check Modal constructor)
- * @param       {string} buttonData.override       Data to define a new Override instance (check Override constructor)
- * @constructor
- */
-function Button(buttonData) {
-  logger.log(
-    'debug',
-    '[Button].constructor:',
-    {
-      'buttonData': buttonData,
-    }
-  );
-
-  // Launch model constructor
-  this.constructor(buttonData);
-
-  // If invalid throw error
-  if (!this.isValid) {
-    var err = new Error('Button has invalid data.');
-    err.status = 'INVALID_BUTTON_DATA';
-    err.errors = this.errors();
-    err.buttonData = buttonData;
-    err.button = this;
-
-    logger.log(
-      'error',
-      '[Button].constructor:',
-      err.message,
-      {
-        'status': err.status,
-        'errors': err.errors,
-        'buttonData': err.buttonData,
-        'button': err.button,
-      }
-    );
-
-    throw err;
-  }
-
-  // Create Bridge instance
-  this.setBridge();
-  // Create Window instance
-  this.setWindow();
-
-  // ------------------------------------------------
-  // PUBLIC METHODS
-
-  /**
-   * Get Window instance
-   * @return {Window} Window instance
-   * @public
-   */
-  this.getWindow = function() {
-    return this._window;
-  };
-
-  /**
-   * Get Bridge instance
-   * @return {Bridge} Bridge instance
-   */
-  this.getBridge = function() {
-    return this._bridge;
-  };
-
-  // END - PUBLIC METHODS
-  // ------------------------------------------------
-
-  // TODO: remove this when in production
-  // Store Button instance to `window.tweakButtons` to allow public access
-  window.tweakButtons = window.tweakButtons || {};
-  window.tweakButtons[this.get('id')] = this;
-
-  logger.log(
-    'debug',
-    '[Button].' + this.get('id') + ':',
-    {
-      'button': this,
-    }
-  );
-};
-
-// Extend Button with ModelButton
-Button = ModelButton(Button);
-
-/**
- * Button config
- * @type   {object}
- * @static
- */
-Button.config = require('./').config.Button;
-
-// ------------------------------------------------
-// UI
-
-/**
- * Create a new Button instance
- * @param   {object}   buttonData Button data to inject in the instance
- * @param   {function} cb         Callback
- * @static
- */
-Button.create = function(buttonData, cb) {
-  logger.log(
-    'debug',
-    '[Button].create:',
-    {
-      'buttonData': buttonData,
-    }
-  );
-
-  try {
-    var button = new Button(buttonData);
-  } catch (err) {
-    logger.log(
-      'error',
-      '[Button].create:',
-      err.message,
-      {
-        'buttonData': buttonData,
-        'err': err,
-      }
-    );
-
-    return cb(err);
-  }
-
-  return cb(null, button);
-};
-
-/**
- * Map DOM Element into Button instance
- * @param   {object}   elButton DOM Element for Button instance
- * @param   {function} cb       Callback
- * @static
- */
-Button.mapElement = function(elButton, cb) {
-  logger.log(
-    'debug',
-    '[Button].mapElement:',
-    {
-      'elButton': elButton,
-    }
-  );
-
-  var bridgeData = Bridge.parseElButton(elButton);
-
-  var buttonData = {};
-  buttonData.id = bridgeData.id;
-  buttonData.windowType = bridgeData.windowType;
-  buttonData.bridge = bridgeData;
-
-  Button.create(buttonData, cb);
-};
-
-/**
- * Map list of DOM Elements into list of Button instances
- * @param   {array}    elButtons DOM Element list
- * @param   {function} cb        Callback
- * @static
- */
-Button.mapElements = function(elButtons, cb) {
-  logger.log(
-    'debug',
-    '[Button].mapElements:',
-    {
-      'elButtons': elButtons,
-    }
-  );
-
-  asyncMapLimit(elButtons, 3, Button.mapElement, cb);
-};
-
-/**
- * Find DOM Elements using class from Button.config.class
- * @param   {function} cb Callback
- * @static
- */
-Button.findElButtons = function(cb) {
-  logger.log(
-    'debug',
-    '[Button].findElButtons'
-  );
-
-  var config = Button.config;
-
-  var elButtons = document.getElementsByClassName(config.class);
-
-  if (!elButtons || elButtons.length === 0) {
-    var err = new Error('No button found on this page');
-    err.status = 'EMPTY_BUTTON';
-    err.elButtons = elButtons;
-
-    logger.log(
-      'error',
-      '[Button].findElButtons:',
-      err.message,
-      {
-        'status': err.status,
-        'elButtons': err.elButtons,
-      }
-    );
-
-    return cb(err);
-  }
-
-  cb(null, elButtons);
-};
-
-/**
- * Discover and initialize Buttons
- * @param   {function} cb Callback
- * @static
- */
-Button.make = function(cb) {
-  logger.log(
-    'debug',
-    '[Button].make'
-  );
-
-  asyncWaterfall([
-    function(next) {
-      Button.findElButtons(next);
-    },
-    function(elButtons, next) {
-      Button.mapElements(elButtons, next);
-    },
-  ], cb);
-};
-
-// END - UI
-// ------------------------------------------------
-
-// ------------------------------------------------
-// WINDOW
-
-Button.prototype._window = null;
-
-/**
- * Handle Button Click when windowType is compatible with Modal
- * @param  {object} e Event
- */
-Button.prototype.onButtonClickForModal = function(e) {
-  e.preventDefault();
-
-  var button = this;
-
-  logger.log(
-    'debug',
-    '[Button].onButtonClickForModal:',
-    {
-      'e': e,
-      'button': button,
-    }
-  );
-
-  if (button.get('windowType') === 'modal') {
-    button._window = new Modal(button._bridge, {
-      'id': button._bridge.get('id'),
-    });
-
-    button._window.open();
-  }
-};
-
-/**
- * Set Modal when windowType is compatible with Modal
- */
-Button.prototype.setWindowAsModal = function() {
-  logger.log(
-    'debug',
-    '[Button].setWindowAsModal'
-  );
-
-  var button = this;
-
-  var elButton = button.getBridge().getElButton();
-
-  elButton.onclick = button.onButtonClickForModal.bind(button);
-};
-
-/**
- * Set Override when windowType is compatible with Override
- */
-Button.prototype.setWindowAsOverride = function() {
-  logger.log(
-    'debug',
-    '[Button].setWindowAsOverride'
-  );
-
-  var button = this;
-
-  button._window = new Override(button._bridge, {
-    'id': button._bridge.get('id'),
-  });
-};
-
-/**
- * Create a new window instance (based on windowType) and attach it to button
- */
-Button.prototype.setWindow = function() {
-  var button = this;
-
-  var windowType = button.get('windowType');
-
-  logger.log(
-    'debug',
-    '[Button].setWindow:',
-    {
-      'setWindow': windowType,
-    }
-  );
-
-  if (windowType.match(/^modal(.*|$)/)) {
-    return button.setWindowAsModal();
-  }
-
-  if (windowType.match(/^override(.*|$)/)) {
-    return button.setWindowAsOverride();
-  }
-};
-
-// END - WINDOW
-// ------------------------------------------------
-
-// ------------------------------------------------
-// BRIDGE
-
-Button.prototype._bridge = null;
-
-/**
- * Create a new Bridge instance and attach it to button
- */
-Button.prototype.setBridge = function() {
-  logger.log(
-    'debug',
-    '[Button].setBridge'
-  );
-
-  var button = this;
-
-  var bridgeData = button.get('bridge');
-  button._bridge = new Bridge(bridgeData);
-};
-
-// END - BRIDGE
-// ------------------------------------------------
-
-/**
- * @return {Button} Button constructor
- */
-module.exports = Button;
-
-},{"./":465,"./Bridge":456,"./Modal":458,"./Override":459,"./logger":466,"./models":470,"async/mapLimit":70,"async/waterfall":71}],458:[function(require,module,exports){
-/**
- * @Author: Matteo Zambon <Matteo>
- * @Date:   2017-09-21 01:37:30
- * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 04:07:12
- */
-
-'use strict';
-
-// Logger
-var logger = require('./logger');
-// Bridge
-var Bridge = require('./Bridge');
-// Extend
-var extend = require('extend');
-// Async - Waterfall
-var asyncWaterfall = require('async/waterfall');
-// Model - Modal
-var ModelModal = require('./models').ModelModal;
-
-/**
- * Modal constructor
- * @param       {Bridge} bridge       Bridge instance
- * @param       {object} modalData    Data to define a new Modal instance
- * @param       {string} modalData.id Button unique identification
- * @constructor
- */
-function Modal(bridge, modalData) {
-  logger.log(
-    'debug',
-    '[Modal].constructor:',
-    {
-      'bridge': bridge,
-      'modalData': modalData,
-    }
-  );
-
-  // Launch model constructor
-  this.constructor(modalData);
-
-  // If invalid throw error
-  if (!this.isValid || !this.getData()) {
-    var err = new Error('Modal has invalid data.');
-    err.status = 'INVALID_MODAL_DATA';
-    err.errors = this.errors();
-    err.modalData = modalData;
-    err.modal = this;
-
-    logger.log(
-      'error',
-      '[Modal].constructor:',
-      err.message,
-      {
-        'status': err.status,
-        'errors': err.errors,
-        'modalData': err.modalData,
-        'modal': err.modal,
-      }
-    );
-
-    throw err;
-  }
-
-  // Pass Bridge to Modal
-  this.bridge = bridge;
-
-  // ------------------------------------------------
-  // PUBLIC METHODS
-
-  /**
-   * Get Bridge instance
-   * @return {object} Bridge instance
-   */
-  this.getBridge = function() {
-    return this.bridge;
-  };
-
-  // END - PUBLIC METHODS
-  // ------------------------------------------------
-
-  // Setup Modal
-  this.setupModal();
-
-  logger.log(
-    'debug',
-    '[Modal].' + this.get('id') + ':',
-    {
-      'modal': this,
-    }
-  );
-}
-
-// Extend Modal with ModelModal
-Modal = ModelModal(Modal);
-
-/**
- * Button config
- * @type   {object}
- * @static
- */
-Modal.config = require('./').config.Modal;
-
-// ------------------------------------------------
-// MODAL
-
-/**
- * Get Tingle.js modal instance
- * @return {tingle.modal} Tingle.js modal instancr
- */
-Modal.prototype.getModal = function() {
-  logger.log(
-    'debug',
-    '[Modal].getModal'
-  );
-
-  return this._modal;
-};
-
-/**
- * Get Tingle.js modal content
- * @return {object} Tingle.js modal content DOM
- */
-Modal.prototype.getContent = function() {
-  logger.log(
-    'debug',
-    '[Modal].getContent'
-  );
-
-  return this._modal.getContent();
-};
-
-/**
- * Set Tingle.js modal content
- * @param  {string} html HTML string
- */
-Modal.prototype.setContent = function(html) {
-  logger.log(
-    'debug',
-    '[Modal].setContent:',
-    {
-      'html': html,
-    }
-  );
-
-  this._modal.setContent(html);
-};
-
-/**
- * Check overflow action on Tingle.js modal instance
- */
-Modal.prototype.checkOverflow = function() {
-  logger.log(
-    'debug',
-    '[Modal].checkOverflow'
-  );
-
-  this._modal.checkOverflow();
-};
-
-/**
- * Open action on Tingle.js modal instance
- */
-Modal.prototype.open = function() {
-  logger.log(
-    'debug',
-    '[Modal].open'
-  );
-
-  this._modal.open();
-};
-
-/**
- * Close action on Tingle.js modal instance
- */
-Modal.prototype.close = function() {
-  logger.log(
-    'debug',
-    '[Modal].close'
-  );
-
-  this._modal.close();
-};
-
-/**
- * Setup Tingle.js modal
- * @return {[type]} [description]
- */
-Modal.prototype.setupModal = function() {
-  logger.log(
-    'debug',
-    '[Modal].setupModal'
-  );
-
-  var modal = this;
-
-  // Tingle.js
-  var tingle = require('tingle.js');
-
-  // Override Tingle.js close
-  if (!tingle.modal.prototype.safeClose) {
-    tingle.modal.prototype.safeClose = tingle.modal.prototype.close;
-
-    tingle.modal.prototype.close = function() {
-      var self = this;
-
-      var swal = require('sweetalert2');
-
-      swal({
-        'title': 'Are you sure you want to close?',
-        'text': "You won't be able to revert this!",
-        'type': 'warning',
-        'showCancelButton': true,
-        'confirmButtonColor': '#3085d6',
-        'cancelButtonColor': '#d33',
-        'confirmButtonText': 'Yes, continue!',
-        'cancelButtonText': 'Keep working!',
-      }).then(function() {
-        self.safeClose();
-      }, function() {});
-    };
-  }
-
-  // Create new Modal.config
-  var modalConfig = extend({}, Modal.config);
-
-  // Setup onOpen as Modal instance onModalOpen
-  modalConfig.onOpen = modal.onModalOpen.bind(modal);
-  // Setup onClose as Modal instance onModalClose
-  modalConfig.onClose = modal.onModalClose.bind(modal);
-
-  // Initialize a new Tingle modal using the new config
-  modal._modal = new tingle.modal(modalConfig);
-
-  // Get Tingle Modal content
-  var elModalContent = modal.getContent();
-
-  // Setup Tpls using Tingle Modal content
-  modal.getBridge().setupTpls(elModalContent);
-  // Update Tingle Modal overflow
-  modal.checkOverflow();
-};
-
-// END - MODAL
-// ------------------------------------------------
-
-// ------------------------------------------------
-// Builder Events
-
-Modal.prototype.onBuilderDone = function() {
-  logger.log(
-    'debug',
-    '[Modal].onBuilderDone'
-  );
-
-  var modal = this;
-
-  modal.close();
-};
-
-// END - Builder Events
-// ------------------------------------------------
-
-// ------------------------------------------------
-// Tingle Modal Events
-
-Modal.prototype.onModalOpen = function() {
-  logger.log(
-    'debug',
-    '[Modal].onModalOpen'
-  );
-
-  var modal = this;
-
-  modal.bridge.setupSockets({
-    'builder': {
-      'done': modal.onBuilderDone.bind(modal),
-    },
-  });
-};
-
-Modal.prototype.onModalClose = function() {
-  logger.log(
-    'debug',
-    '[Modal].onModalClose'
-  );
-
-  var modal = this;
-
-  modal.setContent('');
-};
-
-// END - Tingle Modal Events
-// ------------------------------------------------
-
-/**
- * @return {Modal} Modal constructor
- */
-module.exports = Modal;
-
-},{"./":465,"./Bridge":456,"./logger":466,"./models":470,"async/waterfall":71,"extend":254,"sweetalert2":408,"tingle.js":411}],459:[function(require,module,exports){
-/**
- * @Author: Matteo Zambon <Matteo>
- * @Date:   2017-09-21 01:37:30
- * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 04:18:17
- */
-
-'use strict';
-
-// Logger
-var logger = require('./logger');
-// Bridge
-var Bridge = require('./Bridge');
-// Extend
-var extend = require('extend');
-// Async - Waterfall
-var asyncWaterfall = require('async/waterfall');
-// Model - Override
-var ModelOverride = require('./models').ModelOverride;
-
-/**
- * Override constructor
- * @param       {Bridge} bridge       Bridge instance
- * @param       {object} overrideData    Data to define a new Override instance
- * @param       {string} overrideData.id Button unique identification
- * @constructor
- */
-function Override(bridge, overrideData) {
-  logger.log(
-    'debug',
-    '[Override].constructor:',
-    {
-      'bridge': bridge,
-      'overrideData': overrideData,
-    }
-  );
-
-  // Launch model constructor
-  this.constructor(overrideData);
-
-  // If invalid throw error
-  if (!this.isValid || !this.getData()) {
-    var err = new Error('Override has invalid data.');
-    err.status = 'INVALID_OVERRIDE_DATA';
-    err.errors = this.errors();
-    err.overrideData = overrideData;
-    err.override = this;
-
-    logger.log(
-      'error',
-      '[Override].constructor:',
-      err.message,
-      {
-        'status': err.status,
-        'errors': err.errors,
-        'overrideData': err.overrideData,
-        'override': err.override,
-      }
-    );
-
-    throw err;
-  }
-
-  // Pass Bridge to Override
-  this.bridge = bridge;
-
-  // ------------------------------------------------
-  // PUBLIC METHODS
-
-  /**
-   * Get Bridge instance
-   * @return {object} Bridge instance
-   */
-  this.getBridge = function() {
-    return this.bridge;
-  };
-
-  // END - PUBLIC METHODS
-  // ------------------------------------------------
-
-  // Setup Override
-  this.setupOverride();
-
-  logger.log(
-    'debug',
-    '[setupOverride].' + this.get('id') + ':',
-    {
-      'override': this,
-    }
-  );
-}
-
-// Extend Override with ModelOverride
-Override = ModelOverride(Override);
-
-/**
- * Button config
- * @type   {object}
- * @static
- */
-Override.config = require('./').config.Override;
-
-// ------------------------------------------------
-// OVERRIDE
-
-Override.prototype.setupOverride = function() {
-  logger.log(
-    'debug',
-    '[Override].setupOverride'
-  );
-
-  var override = this;
-  var bridge = override.getBridge();
-
-  // In 'override' mode the container is the actual 'tweak-button'
-  var elContainer = bridge.getElButton();
-
-  // Add CssClass from config to elContainer
-  Bridge.$addClass(elContainer, Override.config.cssClass);
-
-  // Setup Tpls using 'tweak-button'
-  bridge.setupTpls(elContainer);
-  // Setup socket (so that 'tweak-button' can communicate with Tpls)
-  bridge.setupSockets();
-};
-
-// END - OVERRIDE
-// ------------------------------------------------
-
-/**
- * @return {Override} Override constructor
- */
-module.exports = Override;
-
-},{"./":465,"./Bridge":456,"./logger":466,"./models":470,"async/waterfall":71,"extend":254}],460:[function(require,module,exports){
-arguments[4][456][0].apply(exports,arguments)
-},{"./":465,"./Button":457,"./bridges/builder":461,"./bridges/loading":462,"./logger":466,"./models":470,"bellhop-iframe":73,"detect-node":155,"dup":456,"extend":254,"humps":272,"string-template":406,"unique-selector":420,"url":423,"uuid/v4":431}],461:[function(require,module,exports){
+},{"./":462,"./bridges/builder":457,"./bridges/done-confirm":458,"./bridges/loading":459,"./logger":463,"./models":467,"bellhop-iframe":73,"detect-node":155,"extend":254,"humps":272,"string-template":406,"unique-selector":420,"url":423,"uuid/v4":431}],457:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:43:24
@@ -54062,7 +53244,67 @@ module.exports = function(Bridge) {
   return Bridge;
 };
 
-},{"../":465,"../../tpl":474,"../logger":466,"extend":254,"humps":272,"string-template":406,"url":423}],462:[function(require,module,exports){
+},{"../":462,"../../tpl":471,"../logger":463,"extend":254,"humps":272,"string-template":406,"url":423}],458:[function(require,module,exports){
+/**
+ * @Author: Matteo Zambon <Matteo>
+ * @Date:   2017-10-05 03:32:04
+ * @Last modified by:   Matteo
+ * @Last modified time: 2017-10-05 03:52:31
+ */
+
+'use strict';
+
+// Logger
+var logger = require('../logger');
+// String Template
+var format = require('string-template');
+// Extend
+var extend = require('extend');
+// Url
+var url = require('url');
+// Humps
+var humps = require('humps');
+
+module.exports = function(Bridge) {
+  // ------------------------------------------------
+  // TPL
+
+  /**
+   * Default (generator)
+   * @param  {object} params     TPL parameters
+   * @param  {object} params.src Url name (default: 'home')
+   * @return {object}            TPL HTML element
+   */
+  Bridge.prototype.tpls.doneConfirm = function(params) {
+    logger.log(
+      'debug',
+      '[Bridges/DoneConfirm].tpls'
+    );
+
+    var bridge = this;
+    var DoneConfirmConfig = require('../').config.Bridge.s.doneConfirm;
+
+    var defaultParams = {};
+    defaultParams.src = 'home';
+
+    params = extend({}, defaultParams, params);
+
+    var template = require('../../tpl').doneConfirm;
+
+    var html = format(template, params);
+
+    var elTpl = Bridge.$(html);
+
+    return elTpl;
+  };
+
+  // END - TPL
+  // ------------------------------------------------
+
+  return Bridge;
+};
+
+},{"../":462,"../../tpl":471,"../logger":463,"extend":254,"humps":272,"string-template":406,"url":423}],459:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:39:55
@@ -54172,9 +53414,389 @@ module.exports = function(Bridge) {
   return Bridge;
 };
 
-},{"../":465,"../../tpl":474,"../logger":466,"extend":254,"string-template":406}],463:[function(require,module,exports){
-arguments[4][457][0].apply(exports,arguments)
-},{"./":465,"./Bridge":456,"./Modal":458,"./Override":459,"./logger":466,"./models":470,"async/mapLimit":70,"async/waterfall":71,"dup":457}],464:[function(require,module,exports){
+},{"../":462,"../../tpl":471,"../logger":463,"extend":254,"string-template":406}],460:[function(require,module,exports){
+/**
+ * @Author: Matteo Zambon <Matteo>
+ * @Date:   2017-09-20 11:11:27
+ * @Last modified by:   Matteo
+ * @Last modified time: 2017-10-05 04:01:52
+ */
+
+'use strict';
+
+// Logger
+var logger = require('./logger');
+// Async - Waterfall
+var asyncWaterfall = require('async/waterfall');
+// Async - Map - Limit
+var asyncMapLimit = require('async/mapLimit');
+// Modal
+var Modal = require('./modal');
+// Override
+var Override = require('./override');
+// Bridge
+var Bridge = require('./bridge');
+// ModelButton
+var ModelButton = require('./models').ModelButton;
+
+/**
+ * Button constructor
+ * @param       {object} buttonData                Data to define a new Button instance
+ * @param       {string} buttonData.id             Button unique identification
+ * @param       {string} buttonData.windowType     Type of windows where to open the HTML Builder
+ * @param       {string} buttonData.bridge         Data to define a new Bridge instance (check Bridge constructor)
+ * @param       {string} buttonData.modal          Data to define a new Modal instance (check Modal constructor)
+ * @param       {string} buttonData.override       Data to define a new Override instance (check Override constructor)
+ * @constructor
+ */
+function Button(buttonData) {
+  logger.log(
+    'debug',
+    '[Button].constructor:',
+    {
+      'buttonData': buttonData,
+    }
+  );
+
+  // Launch model constructor
+  this.constructor(buttonData);
+
+  // If invalid throw error
+  if (!this.isValid) {
+    var err = new Error('Button has invalid data.');
+    err.status = 'INVALID_BUTTON_DATA';
+    err.errors = this.errors();
+    err.buttonData = buttonData;
+    err.button = this;
+
+    logger.log(
+      'error',
+      '[Button].constructor:',
+      err.message,
+      {
+        'status': err.status,
+        'errors': err.errors,
+        'buttonData': err.buttonData,
+        'button': err.button,
+      }
+    );
+
+    throw err;
+  }
+
+  // Create Bridge instance
+  this.setBridge();
+  // Create Window instance
+  this.setWindow();
+
+  // ------------------------------------------------
+  // PUBLIC METHODS
+
+  /**
+   * Get Window instance
+   * @return {Window} Window instance
+   * @public
+   */
+  this.getWindow = function() {
+    return this._window;
+  };
+
+  /**
+   * Get Bridge instance
+   * @return {Bridge} Bridge instance
+   */
+  this.getBridge = function() {
+    return this._bridge;
+  };
+
+  // END - PUBLIC METHODS
+  // ------------------------------------------------
+
+  // TODO: remove this when in production
+  // Store Button instance to `window.tweakButtons` to allow public access
+  window.tweakButtons = window.tweakButtons || {};
+  window.tweakButtons[this.get('id')] = this;
+
+  logger.log(
+    'debug',
+    '[Button].' + this.get('id') + ':',
+    {
+      'button': this,
+    }
+  );
+};
+
+// Extend Button with ModelButton
+Button = ModelButton(Button);
+
+/**
+ * Button config
+ * @type   {object}
+ * @static
+ */
+Button.config = require('./').config.Button;
+
+// ------------------------------------------------
+// UI
+
+/**
+ * Create a new Button instance
+ * @param   {object}   buttonData Button data to inject in the instance
+ * @param   {function} cb         Callback
+ * @static
+ */
+Button.create = function(buttonData, cb) {
+  logger.log(
+    'debug',
+    '[Button].create:',
+    {
+      'buttonData': buttonData,
+    }
+  );
+
+  // try {
+  var button = new Button(buttonData);
+  // } catch (err) {
+  //   logger.log(
+  //     'error',
+  //     '[Button].create:',
+  //     err.message,
+  //     {
+  //       'buttonData': buttonData,
+  //       'err': err,
+  //     }
+  //   );
+  //
+  //   return cb(err);
+  // }
+
+  return cb(null, button);
+};
+
+/**
+ * Map DOM Element into Button instance
+ * @param   {object}   elButton DOM Element for Button instance
+ * @param   {function} cb       Callback
+ * @static
+ */
+Button.mapElement = function(elButton, cb) {
+  logger.log(
+    'debug',
+    '[Button].mapElement:',
+    {
+      'elButton': elButton,
+    }
+  );
+
+  var bridgeData = Bridge.parseElButton(elButton);
+
+  var buttonData = {};
+  buttonData.id = bridgeData.id;
+  buttonData.windowType = bridgeData.windowType;
+  buttonData.bridge = bridgeData;
+
+  Button.create(buttonData, cb);
+};
+
+/**
+ * Map list of DOM Elements into list of Button instances
+ * @param   {array}    elButtons DOM Element list
+ * @param   {function} cb        Callback
+ * @static
+ */
+Button.mapElements = function(elButtons, cb) {
+  logger.log(
+    'debug',
+    '[Button].mapElements:',
+    {
+      'elButtons': elButtons,
+    }
+  );
+
+  asyncMapLimit(elButtons, 3, Button.mapElement, cb);
+};
+
+/**
+ * Find DOM Elements using class from Button.config.class
+ * @param   {function} cb Callback
+ * @static
+ */
+Button.findElButtons = function(cb) {
+  logger.log(
+    'debug',
+    '[Button].findElButtons'
+  );
+
+  var config = Button.config;
+
+  var elButtons = document.getElementsByClassName(config.class);
+
+  if (!elButtons || elButtons.length === 0) {
+    var err = new Error('No button found on this page');
+    err.status = 'EMPTY_BUTTON';
+    err.elButtons = elButtons;
+
+    logger.log(
+      'error',
+      '[Button].findElButtons:',
+      err.message,
+      {
+        'status': err.status,
+        'elButtons': err.elButtons,
+      }
+    );
+
+    return cb(err);
+  }
+
+  cb(null, elButtons);
+};
+
+/**
+ * Discover and initialize Buttons
+ * @param   {function} cb Callback
+ * @static
+ */
+Button.make = function(cb) {
+  logger.log(
+    'debug',
+    '[Button].make'
+  );
+
+  asyncWaterfall([
+    function(next) {
+      Button.findElButtons(next);
+    },
+    function(elButtons, next) {
+      Button.mapElements(elButtons, next);
+    },
+  ], cb);
+};
+
+// END - UI
+// ------------------------------------------------
+
+// ------------------------------------------------
+// WINDOW
+
+Button.prototype._window = null;
+
+/**
+ * Handle Button Click when windowType is compatible with Modal
+ * @param  {object} e Event
+ */
+Button.prototype.onButtonClickForModal = function(e) {
+  e.preventDefault();
+
+  var button = this;
+
+  logger.log(
+    'debug',
+    '[Button].onButtonClickForModal:',
+    {
+      'e': e,
+      'button': button,
+    }
+  );
+
+  if (button.get('windowType') === 'modal') {
+    button._window = new Modal(button._bridge, {
+      'id': button._bridge.get('id'),
+    });
+
+    button._window.open();
+  }
+};
+
+/**
+ * Set Modal when windowType is compatible with Modal
+ */
+Button.prototype.setWindowAsModal = function() {
+  logger.log(
+    'debug',
+    '[Button].setWindowAsModal'
+  );
+
+  var button = this;
+
+  var elButton = button.getBridge().getElButton();
+
+  elButton.onclick = button.onButtonClickForModal.bind(button);
+};
+
+/**
+ * Set Override when windowType is compatible with Override
+ */
+Button.prototype.setWindowAsOverride = function() {
+  logger.log(
+    'debug',
+    '[Button].setWindowAsOverride'
+  );
+
+  var button = this;
+
+  button._window = new Override(button._bridge, {
+    'id': button._bridge.get('id'),
+  });
+};
+
+/**
+ * Create a new window instance (based on windowType) and attach it to button
+ */
+Button.prototype.setWindow = function() {
+  var button = this;
+
+  var windowType = button.get('windowType');
+
+  logger.log(
+    'debug',
+    '[Button].setWindow:',
+    {
+      'setWindow': windowType,
+    }
+  );
+
+  if (windowType.match(/^modal(.*|$)/)) {
+    return button.setWindowAsModal();
+  }
+
+  if (windowType.match(/^override(.*|$)/)) {
+    return button.setWindowAsOverride();
+  }
+};
+
+// END - WINDOW
+// ------------------------------------------------
+
+// ------------------------------------------------
+// BRIDGE
+
+Button.prototype._bridge = null;
+
+/**
+ * Create a new Bridge instance and attach it to button
+ */
+Button.prototype.setBridge = function() {
+  logger.log(
+    'debug',
+    '[Button].setBridge'
+  );
+
+  var button = this;
+
+  var bridgeData = button.get('bridge');
+  button._bridge = new Bridge(bridgeData);
+};
+
+// END - BRIDGE
+// ------------------------------------------------
+
+/**
+ * @return {Button} Button constructor
+ */
+module.exports = Button;
+
+},{"./":462,"./bridge":456,"./logger":463,"./modal":464,"./models":467,"./override":470,"async/mapLimit":70,"async/waterfall":71}],461:[function(require,module,exports){
 module.exports={
   "css": "https://apicdn.tweak.com/tweak-button/sdk.min.css",
   "Bridge": {
@@ -54182,8 +53804,8 @@ module.exports={
       "builder": {
         "socketPrefix": "tweakBuilder",
         "base": {
-          "protocol": "http",
-          "host": "127.0.0.1:3002"
+          "protocol": "https",
+          "host": "builder.tweak.com"
         },
         "home": {
           "pathname": "/"
@@ -54202,7 +53824,8 @@ module.exports={
           "Glorious things are waiting for you. We're just getting them ready.",
           "Enjoy new Tweak Builder HTML responsibly."
         ]
-      }
+      },
+      "doneConfirm": {}
     },
     "animations": {
       "1": {
@@ -54512,7 +54135,7 @@ module.exports={
     "logLevel": "error"
   }
 }
-},{}],465:[function(require,module,exports){
+},{}],462:[function(require,module,exports){
 (function (process){
 /**
  * @Author: Matteo Zambon <Matteo>
@@ -54541,7 +54164,7 @@ exports.Override = require('./override');
 exports.Button = require('./button');
 
 }).call(this,require('_process'))
-},{"./bridge":460,"./button":463,"./config.json":464,"./logger":466,"./modal":467,"./override":473,"_process":365,"detect-node":155}],466:[function(require,module,exports){
+},{"./bridge":456,"./button":460,"./config.json":461,"./logger":463,"./modal":464,"./override":470,"_process":365,"detect-node":155}],463:[function(require,module,exports){
 (function (process){
 /**
  * @Author: Matteo Zambon <Matteo>
@@ -54593,9 +54216,307 @@ if (isNode) {
 module.exports = logger;
 
 }).call(this,require('_process'))
-},{"./":465,"_process":365,"detect-node":155,"winston":437,"winston-console-formatter":434}],467:[function(require,module,exports){
-arguments[4][458][0].apply(exports,arguments)
-},{"./":465,"./Bridge":456,"./logger":466,"./models":470,"async/waterfall":71,"dup":458,"extend":254,"sweetalert2":408,"tingle.js":411}],468:[function(require,module,exports){
+},{"./":462,"_process":365,"detect-node":155,"winston":437,"winston-console-formatter":434}],464:[function(require,module,exports){
+/**
+ * @Author: Matteo Zambon <Matteo>
+ * @Date:   2017-09-21 01:37:30
+ * @Last modified by:   Matteo
+ * @Last modified time: 2017-10-04 04:07:12
+ */
+
+'use strict';
+
+// Logger
+var logger = require('./logger');
+// Bridge
+var Bridge = require('./bridge');
+// Extend
+var extend = require('extend');
+// Async - Waterfall
+var asyncWaterfall = require('async/waterfall');
+// Model - Modal
+var ModelModal = require('./models').ModelModal;
+
+/**
+ * Modal constructor
+ * @param       {Bridge} bridge       Bridge instance
+ * @param       {object} modalData    Data to define a new Modal instance
+ * @param       {string} modalData.id Button unique identification
+ * @constructor
+ */
+function Modal(bridge, modalData) {
+  logger.log(
+    'debug',
+    '[Modal].constructor:',
+    {
+      'bridge': bridge,
+      'modalData': modalData,
+    }
+  );
+
+  // Launch model constructor
+  this.constructor(modalData);
+
+  // If invalid throw error
+  if (!this.isValid || !this.getData()) {
+    var err = new Error('Modal has invalid data.');
+    err.status = 'INVALID_MODAL_DATA';
+    err.errors = this.errors();
+    err.modalData = modalData;
+    err.modal = this;
+
+    logger.log(
+      'error',
+      '[Modal].constructor:',
+      err.message,
+      {
+        'status': err.status,
+        'errors': err.errors,
+        'modalData': err.modalData,
+        'modal': err.modal,
+      }
+    );
+
+    throw err;
+  }
+
+  // Pass Bridge to Modal
+  this.bridge = bridge;
+
+  // ------------------------------------------------
+  // PUBLIC METHODS
+
+  /**
+   * Get Bridge instance
+   * @return {object} Bridge instance
+   */
+  this.getBridge = function() {
+    return this.bridge;
+  };
+
+  // END - PUBLIC METHODS
+  // ------------------------------------------------
+
+  // Setup Modal
+  this.setupModal();
+
+  logger.log(
+    'debug',
+    '[Modal].' + this.get('id') + ':',
+    {
+      'modal': this,
+    }
+  );
+}
+
+// Extend Modal with ModelModal
+Modal = ModelModal(Modal);
+
+/**
+ * Button config
+ * @type   {object}
+ * @static
+ */
+Modal.config = require('./').config.Modal;
+
+// ------------------------------------------------
+// MODAL
+
+/**
+ * Get Tingle.js modal instance
+ * @return {tingle.modal} Tingle.js modal instancr
+ */
+Modal.prototype.getModal = function() {
+  logger.log(
+    'debug',
+    '[Modal].getModal'
+  );
+
+  return this._modal;
+};
+
+/**
+ * Get Tingle.js modal content
+ * @return {object} Tingle.js modal content DOM
+ */
+Modal.prototype.getContent = function() {
+  logger.log(
+    'debug',
+    '[Modal].getContent'
+  );
+
+  return this._modal.getContent();
+};
+
+/**
+ * Set Tingle.js modal content
+ * @param  {string} html HTML string
+ */
+Modal.prototype.setContent = function(html) {
+  logger.log(
+    'debug',
+    '[Modal].setContent:',
+    {
+      'html': html,
+    }
+  );
+
+  this._modal.setContent(html);
+};
+
+/**
+ * Check overflow action on Tingle.js modal instance
+ */
+Modal.prototype.checkOverflow = function() {
+  logger.log(
+    'debug',
+    '[Modal].checkOverflow'
+  );
+
+  this._modal.checkOverflow();
+};
+
+/**
+ * Open action on Tingle.js modal instance
+ */
+Modal.prototype.open = function() {
+  logger.log(
+    'debug',
+    '[Modal].open'
+  );
+
+  this._modal.open();
+};
+
+/**
+ * Close action on Tingle.js modal instance
+ */
+Modal.prototype.close = function() {
+  logger.log(
+    'debug',
+    '[Modal].close'
+  );
+
+  this._modal.close();
+};
+
+/**
+ * Setup Tingle.js modal
+ * @return {[type]} [description]
+ */
+Modal.prototype.setupModal = function() {
+  logger.log(
+    'debug',
+    '[Modal].setupModal'
+  );
+
+  var modal = this;
+
+  // Tingle.js
+  var tingle = require('tingle.js');
+
+  // Override Tingle.js close
+  if (!tingle.modal.prototype.safeClose) {
+    tingle.modal.prototype.safeClose = tingle.modal.prototype.close;
+
+    tingle.modal.prototype.close = function() {
+      var self = this;
+
+      var swal = require('sweetalert2');
+
+      swal({
+        'title': 'Are you sure you want to close?',
+        'text': "You won't be able to revert this!",
+        'type': 'warning',
+        'showCancelButton': true,
+        'confirmButtonColor': '#3085d6',
+        'cancelButtonColor': '#d33',
+        'confirmButtonText': 'Yes, continue!',
+        'cancelButtonText': 'Keep working!',
+      }).then(function() {
+        self.safeClose();
+      }, function() {});
+    };
+  }
+
+  // Create new Modal.config
+  var modalConfig = extend({}, Modal.config);
+
+  // Setup onOpen as Modal instance onModalOpen
+  modalConfig.onOpen = modal.onModalOpen.bind(modal);
+  // Setup onClose as Modal instance onModalClose
+  modalConfig.onClose = modal.onModalClose.bind(modal);
+
+  // Initialize a new Tingle modal using the new config
+  modal._modal = new tingle.modal(modalConfig);
+
+  // Get Tingle Modal content
+  var elModalContent = modal.getContent();
+
+  // Setup Tpls using Tingle Modal content
+  modal.getBridge().setupTpls(elModalContent);
+  // Update Tingle Modal overflow
+  modal.checkOverflow();
+};
+
+// END - MODAL
+// ------------------------------------------------
+
+// ------------------------------------------------
+// Builder Events
+
+Modal.prototype.onBuilderDone = function() {
+  logger.log(
+    'debug',
+    '[Modal].onBuilderDone'
+  );
+
+  var modal = this;
+
+  modal.close();
+};
+
+// END - Builder Events
+// ------------------------------------------------
+
+// ------------------------------------------------
+// Tingle Modal Events
+
+Modal.prototype.onModalOpen = function() {
+  logger.log(
+    'debug',
+    '[Modal].onModalOpen'
+  );
+
+  var modal = this;
+
+  modal.bridge.setupSockets({
+    'builder': {
+      'done': modal.onBuilderDone.bind(modal),
+    },
+  });
+};
+
+Modal.prototype.onModalClose = function() {
+  logger.log(
+    'debug',
+    '[Modal].onModalClose'
+  );
+
+  var modal = this;
+
+  modal.setContent('');
+};
+
+// END - Tingle Modal Events
+// ------------------------------------------------
+
+/**
+ * @return {Modal} Modal constructor
+ */
+module.exports = Modal;
+
+},{"./":462,"./bridge":456,"./logger":463,"./models":467,"async/waterfall":71,"extend":254,"sweetalert2":408,"tingle.js":411}],465:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
@@ -54748,7 +54669,7 @@ module.exports = {
   'additionalProperties': false,
 };
 
-},{}],469:[function(require,module,exports){
+},{}],466:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 11:47:35
@@ -54779,7 +54700,7 @@ module.exports = {
   'additionalProperties': false,
 };
 
-},{"./bridge":468}],470:[function(require,module,exports){
+},{"./bridge":465}],467:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 11:48:54
@@ -54950,7 +54871,7 @@ exports.ModelOverride = function(Class) {
   return Model.generate('override', Class);
 };
 
-},{"./bridge":468,"./button":469,"./modal":471,"./override":472,"ajv":2}],471:[function(require,module,exports){
+},{"./bridge":465,"./button":466,"./modal":468,"./override":469,"ajv":2}],468:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 11:47:35
@@ -54972,21 +54893,174 @@ module.exports = {
   'additionalProperties': false,
 };
 
-},{}],472:[function(require,module,exports){
-arguments[4][471][0].apply(exports,arguments)
-},{"dup":471}],473:[function(require,module,exports){
-arguments[4][459][0].apply(exports,arguments)
-},{"./":465,"./Bridge":456,"./logger":466,"./models":470,"async/waterfall":71,"dup":459,"extend":254}],474:[function(require,module,exports){
+},{}],469:[function(require,module,exports){
+arguments[4][468][0].apply(exports,arguments)
+},{"dup":468}],470:[function(require,module,exports){
+/**
+ * @Author: Matteo Zambon <Matteo>
+ * @Date:   2017-09-21 01:37:30
+ * @Last modified by:   Matteo
+ * @Last modified time: 2017-10-04 04:18:17
+ */
+
+'use strict';
+
+// Logger
+var logger = require('./logger');
+// Bridge
+var Bridge = require('./bridge');
+// Extend
+var extend = require('extend');
+// Async - Waterfall
+var asyncWaterfall = require('async/waterfall');
+// Model - Override
+var ModelOverride = require('./models').ModelOverride;
+
+/**
+ * Override constructor
+ * @param       {Bridge} bridge       Bridge instance
+ * @param       {object} overrideData    Data to define a new Override instance
+ * @param       {string} overrideData.id Button unique identification
+ * @constructor
+ */
+function Override(bridge, overrideData) {
+  logger.log(
+    'debug',
+    '[Override].constructor:',
+    {
+      'bridge': bridge,
+      'overrideData': overrideData,
+    }
+  );
+
+  // Launch model constructor
+  this.constructor(overrideData);
+
+  // If invalid throw error
+  if (!this.isValid || !this.getData()) {
+    var err = new Error('Override has invalid data.');
+    err.status = 'INVALID_OVERRIDE_DATA';
+    err.errors = this.errors();
+    err.overrideData = overrideData;
+    err.override = this;
+
+    logger.log(
+      'error',
+      '[Override].constructor:',
+      err.message,
+      {
+        'status': err.status,
+        'errors': err.errors,
+        'overrideData': err.overrideData,
+        'override': err.override,
+      }
+    );
+
+    throw err;
+  }
+
+  // Pass Bridge to Override
+  this.bridge = bridge;
+
+  // ------------------------------------------------
+  // PUBLIC METHODS
+
+  /**
+   * Get Bridge instance
+   * @return {object} Bridge instance
+   */
+  this.getBridge = function() {
+    return this.bridge;
+  };
+
+  // END - PUBLIC METHODS
+  // ------------------------------------------------
+
+  // Setup Override
+  this.setupOverride();
+
+  logger.log(
+    'debug',
+    '[setupOverride].' + this.get('id') + ':',
+    {
+      'override': this,
+    }
+  );
+}
+
+// Extend Override with ModelOverride
+Override = ModelOverride(Override);
+
+/**
+ * Button config
+ * @type   {object}
+ * @static
+ */
+Override.config = require('./').config.Override;
+
+// ------------------------------------------------
+// OVERRIDE
+
+Override.prototype.setupOverride = function() {
+  logger.log(
+    'debug',
+    '[Override].setupOverride'
+  );
+
+  var override = this;
+  var bridge = override.getBridge();
+
+  // In 'override' mode the container is the actual 'tweak-button'
+  var elContainer = bridge.getElButton();
+
+  // Add CssClass from config to elContainer
+  Bridge.$addClass(elContainer, Override.config.cssClass);
+
+  // Setup Tpls using 'tweak-button'
+  bridge.setupTpls(elContainer);
+  // Setup socket (so that 'tweak-button' can communicate with Tpls)
+  bridge.setupSockets();
+};
+
+// END - OVERRIDE
+// ------------------------------------------------
+
+/**
+ * @return {Override} Override constructor
+ */
+module.exports = Override;
+
+},{"./":462,"./bridge":456,"./logger":463,"./models":467,"async/waterfall":71,"extend":254}],471:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-25 04:07:34
-@Last modified by:   Matteo
-@Last modified time: 2017-09-25 04:23:11
+ * @Last modified by:   Matteo
+ * @Last modified time: 2017-10-05 02:36:31
  */
 
 'use strict';
 
 exports.builder = '<iframe id="{prefix}-{id}" class="tweakBuilder tweak-page" src="{src}"></iframe>';
+exports.doneConfirm = '<div id="{prefix}-{id}" class="tweakDoneConfirm tweak-page">' +
+'<div class="tweak-pure">' +
+'<div class="tweak-content-wrapper">' +
+'<div class="tweak-content">' +
+'<h4 class="tweak-pure-h4 tweak-content-head tweak-is-center">Review your work before continue</h4>' +
+'<div class="tweak-pure-g">' +
+'<div class="tweak-l-box tweak-pure-u-1"' +
+'<embed id="{prefix}-{id}-pdf" width="100%" height="100%" type="application/pdf" />' +
+'</div>' +
+'</div>' +
+'</div>' +
+'<div class="tweak-ribbon tweak-l-box-lrg tweak-pure-g">' +
+'<div class="tweak-pure-u-1 tweak-is-right">' +
+'<button id="{prefix}-{id}-btn-back" class="tweak-button-large tweak-pure-button">Back</button>' +
+'<button id="{prefix}-{id}-btn-continue" class="tweak-button-large tweak-pure-button tweak-pure-button-success">Continue</button>' +
+'</div>' +
+'</div>' +
+'</div>' +
+'</div>' +
+'</div>';
 exports.loading = '<div id="{prefix}-{id}" class="tweakLoading tweak-page tweak-page-current tweak-loading-screen tweak-loading">' +
 '<div class="tweak-loading-inner">' +
 '<div class="tweak-loading-center-outer">' +
