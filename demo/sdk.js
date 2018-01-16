@@ -59589,7 +59589,7 @@ onloadCSS(stylesheet, function() {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2017-11-01 01:33:20
+ * @Last modified time: 2018-01-16 12:25:56
  */
 
 'use strict';
@@ -59732,7 +59732,7 @@ Bridge.parseElButton = function(elButton, cb) {
 
   var bridgeData = {};
 
-  bridgeData.id = uuidv4();
+  bridgeData.id = elButton.id || uuidv4();
 
   if (elButton.dataset.windowType) {
     bridgeData.windowType = elButton.dataset.windowType;
@@ -59834,6 +59834,10 @@ Bridge.parseElButton = function(elButton, cb) {
 
   if (elButton.dataset.cbDone) {
     bridgeData.callbacks.onDone = elButton.dataset.cbDone;
+  }
+
+  if (elButton.dataset.cbAbort) {
+    bridgeData.callbacks.onAbort = elButton.dataset.cbAbort;
   }
 
   if (elButton.dataset.usertoken) {
@@ -60525,7 +60529,7 @@ module.exports = Bridge;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:43:24
  * @Last modified by:   Matteo
- * @Last modified time: 2017-10-31 11:21:45
+ * @Last modified time: 2018-01-16 12:27:06
  */
 
 'use strict';
@@ -60751,6 +60755,32 @@ module.exports = function(Bridge) {
 
     if (bridge.get('callbacks.onDone')) {
       window[bridge.get('callbacks.onDone')](data);
+    }
+  };
+
+  /**
+   * Tweak Builder has requested to close
+   * @param  {object} e Event
+   */
+  Bridge.prototype.ons.builder['abort'] = function(e) {
+    logger.log(
+      'debug',
+      '[Bridges/Builder].ons.abort:',
+      {
+        'e': e,
+      }
+    );
+
+    var bridge = this;
+
+    var data = e.data;
+
+    if (bridge.ons.builder._abort) {
+      bridge.ons.builder._abort(e);
+    }
+
+    if (bridge.get('callbacks.onAbort')) {
+      window[bridge.get('callbacks.onAbort')](data);
     }
   };
 
@@ -61722,7 +61752,7 @@ module.exports={
     }
   },
   "env": "demo",
-  "version": "1.0.0-alpha.3"
+  "version": "1.0.0-alpha.4"
 }
 },{}],503:[function(require,module,exports){
 (function (process){
@@ -61831,7 +61861,7 @@ module.exports = logger;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:37:30
  * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 04:07:12
+ * @Last modified time: 2018-01-16 12:28:11
  */
 
 'use strict';
@@ -62086,6 +62116,17 @@ Modal.prototype.onBuilderDone = function() {
   modal.close();
 };
 
+Modal.prototype.onBuilderAbort = function() {
+  logger.log(
+    'debug',
+    '[Modal].onBuilderAbort'
+  );
+
+  var modal = this;
+
+  modal.close();
+};
+
 // END - Builder Events
 // ------------------------------------------------
 
@@ -62103,6 +62144,7 @@ Modal.prototype.onModalOpen = function() {
   modal.bridge.setupSockets({
     'builder': {
       'done': modal.onBuilderDone.bind(modal),
+      'abort': modal.onBuilderAbort.bind(modal),
     },
   });
 };
@@ -62131,7 +62173,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2017-11-01 01:32:23
+ * @Last modified time: 2018-01-16 12:24:57
  */
 
 'use strict';
@@ -62266,8 +62308,15 @@ module.exports = {
             'args': 1,
           },
         },
-        // when it's requested to close the builder
+        // when it's requested to close the builder with a saved design
         'onDone': {
+          'type': 'string',
+          'jsCallback': {
+            'args': 1,
+          },
+        },
+        // when it's requested to close the builder
+        'onAbort': {
           'type': 'string',
           'jsCallback': {
             'args': 1,
@@ -62311,7 +62360,7 @@ module.exports = {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 11:47:35
  * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 03:57:15
+ * @Last modified time: 2018-01-10 01:44:03
  */
 
 'use strict';
@@ -62321,7 +62370,6 @@ module.exports = {
   'properties': {
     'id': {
       'type': 'string',
-      'format': 'uuid',
     },
     'windowType': {
       'type': 'string',
