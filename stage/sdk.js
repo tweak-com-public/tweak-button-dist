@@ -59589,7 +59589,7 @@ onloadCSS(stylesheet, function() {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2018-01-16 12:25:56
+ * @Last modified time: 2018-01-30 01:29:32
  */
 
 'use strict';
@@ -59622,30 +59622,32 @@ var TweakPublicV1 = require('./rest').TweakPublic.V1;
 
 /**
  * Bridge constructor
- * @param       {object}  bridgeData                       Data to define a new Bridge instance
- * @param       {string}  bridgeData.id                    Button unique identification
- * @param       {string}  bridgeData.windowType            Type of windows where to open the HTML Builder
- * @param       {string}  bridgeData.input                 DOM selector for element where to add the image src once generated
- * @param       {object}  bridgeData.team                  Definitions for Team session
- * @param       {object}  bridgeData.team.clientKey        Team.clientKey for Tweak API Team validation
- * @param       {object}  bridgeData.teamMember            Definitions for Team Member session
- * @param       {object}  bridgeData.teamMember.email      Email for a new Team Member registration
- * @param       {object}  bridgeData.teamMember.key        TeamMember.key for Tweak API TeamMember validation
- * @param       {object}  bridgeData.portal                Definitions for Portal session
- * @param       {object}  bridgeData.portal.id             Porta.id for Tweak API Portal validation
- * @param       {object}  bridgeData.design                Definitions for Design to launch on HTML Builder startup
- * @param       {object}  bridgeData.design.id             Design.id from Tweak API
- * @param       {object}  bridgeData.template              Definitions for Template to launch on HTML Builder startup
- * @param       {object}  bridgeData.template.id           Template.id from Tweak API
- * @param       {object}  bridgeData.tweakTemplate         Definitions for TweakTemplate to launch on HTML Builder startup
- * @param       {object}  bridgeData.tweakTemplate.id      TweakTemplate.id from Tweak API
- * @param       {object}  bridgeData.callbacks             List of callbacks
- * @param       {string}  bridgeData.uniqueSelector        Unique DOM selector
- * @param       {number}  bridgeData.animationCode         Animation code
- * @param       {boolean} bridgeData.legacy                Define approach for Legacy API
- * @param       {string}  bridgeData.productId             Legacy Template ID
- * @param       {string}  bridgeData.sevedProductId        Legacy Design ID
- * @param       {string}  bridgeData.userToken             Legacy User Token
+ * @param       {object}  bridgeData                         Data to define a new Bridge instance
+ * @param       {string}  bridgeData.id                      Button unique identification
+ * @param       {string}  bridgeData.windowType              Type of windows where to open the HTML Builder
+ * @param       {string}  bridgeData.input                   DOM selector for element where to add the image src once generated
+ * @param       {object}  bridgeData.team                    Definitions for Team session
+ * @param       {object}  bridgeData.team.clientKey          Team.clientKey for Tweak API Team validation
+ * @param       {object}  bridgeData.teamMember              Definitions for Team Member session
+ * @param       {object}  bridgeData.teamMember.email        Email for a new Team Member registration
+ * @param       {object}  bridgeData.teamMember.key          TeamMember.key for Tweak API TeamMember validation
+ * @param       {object}  bridgeData.portal                  Definitions for Portal session
+ * @param       {object}  bridgeData.portal.id               Porta.id for Tweak API Portal validation
+ * @param       {object}  bridgeData.design                  Definitions for Design to launch on HTML Builder startup
+ * @param       {object}  bridgeData.design.id               Design.id from Tweak API
+ * @param       {object}  bridgeData.template                Definitions for Template to launch on HTML Builder startup
+ * @param       {object}  bridgeData.template.id             Template.id from Tweak API
+ * @param       {object}  bridgeData.tweakTemplate           Definitions for TweakTemplate to launch on HTML Builder startup
+ * @param       {object}  bridgeData.tweakTemplate.id        TweakTemplate.id from Tweak API
+ * @param       {object}  bridgeData.callbacks               List of callbacks
+ * @param       {string}  bridgeData.uniqueSelector          Unique DOM selector
+ * @param       {number}  bridgeData.animationCode           Animation code
+ * @param       {object}  bridgeData.loading                 Loading view settings
+ * @param       {object}  bridgeData.loading.quotes          Random messages set for loading view
+ * @param       {boolean} bridgeData.legacy                  Define approach for Legacy API
+ * @param       {string}  bridgeData.productId               Legacy Template ID
+ * @param       {string}  bridgeData.sevedProductId          Legacy Design ID
+ * @param       {string}  bridgeData.userToken               Legacy User Token
  * @constructor
  */
 function Bridge(bridgeData) {
@@ -59816,6 +59818,16 @@ Bridge.parseElButton = function(elButton, cb) {
 
   if (elButton.dataset.animation) {
     bridgeData.animationCode = parseInt(elButton.dataset.animation);
+  }
+
+  bridgeData.loading = {};
+  if (elButton.dataset.quotes === 'false') {
+    bridgeData.loading.quotes = [];
+  } else if (elButton.dataset.quotes) {
+    bridgeData.loading.quotes = elButton.dataset.quotes.split('|');
+  }
+  if (Object.keys(bridgeData.loading).length === 0) {
+    delete bridgeData.loading;
   }
 
   if (elButton.dataset.productid) {
@@ -60859,7 +60871,7 @@ module.exports = function(Bridge) {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:39:55
  * @Last modified by:   Matteo
- * @Last modified time: 2017-10-04 03:48:24
+ * @Last modified time: 2018-01-30 01:30:37
  */
 
 'use strict';
@@ -60885,7 +60897,7 @@ module.exports = function(Bridge) {
     var bridge = this;
     var LoadingConfig = require('../').config.Bridge.s.loading;
 
-    var randomMessages = LoadingConfig.randomMessages;
+    var randomMessages = bridge.get('loading.quotes');
 
     var randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
 
@@ -60898,6 +60910,26 @@ module.exports = function(Bridge) {
     );
 
     return randomMessage;
+  };
+
+  /**
+   * Has random message enabled?
+   * @return {boolean} Random message enabled
+   */
+  Bridge.prototype.helpers.loading.isRandomMessageEnabled = function() {
+    var bridge = this;
+
+    var randomMessages = bridge.get('loading.quotes');
+
+    logger.log(
+      'debug',
+      '[Bridges/Loading].helpers.isRandomMessageEnabled:',
+      {
+        'randomMessages': randomMessages,
+      }
+    );
+
+    return (randomMessages.length > 0);
   };
 
   /**
@@ -60945,7 +60977,7 @@ module.exports = function(Bridge) {
 
     var defaultParams = {};
 
-    defaultParams.message = bridge.helpers.loading.randomMessage();
+    defaultParams.message = bridge.helpers.loading.randomMessage.bind(bridge)();
 
     params = extend(true, {}, defaultParams, params);
 
@@ -60954,6 +60986,10 @@ module.exports = function(Bridge) {
     var html = format(template, params);
 
     var elTpl = Bridge.$(html);
+
+    if (!bridge.helpers.loading.isRandomMessageEnabled.bind(bridge)()) {
+      elTpl.querySelector('.loading-message').style.display = 'none';
+    }
 
     return elTpl;
   };
@@ -61752,7 +61788,7 @@ module.exports={
     }
   },
   "env": "stage",
-  "version": "1.0.0-alpha.4"
+  "version": "1.0.0-alpha.5"
 }
 },{}],503:[function(require,module,exports){
 (function (process){
@@ -62173,7 +62209,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-01-16 12:24:57
+ * @Last modified time: 2018-01-30 01:28:56
  */
 
 'use strict';
@@ -62336,6 +62372,32 @@ module.exports = {
       'max': 67,
       'default': 53,
     },
+    'loading': {
+      'type': 'object',
+      'properties': {
+        'quotes': {
+          'type': 'array',
+          'items': {
+            'type': 'string',
+          },
+          'default': [
+            'Hey, we\'re hiring! Reach out at info@tweak.com',
+            'Hey you. Welcome back!',
+            'You look nice today',
+            'Amazing things come to those who wait',
+            'You usually have to wait for that which is worth waiting for',
+            'If you spend your whole life waiting for the storm, you\'ll never enjoy the sunshine',
+            'Don\'t wait for the perfect moment. Take the moment and make it perfect',
+            'Don\'t wait for opportunity. Create it.',
+            'Glorious things are waiting for you. We\'re just getting them ready.',
+            'Enjoy new Tweak Builder HTML responsibly.',
+          ],
+        },
+      },
+      'additionalProperties': false,
+      'required': ['quotes'],
+      'default': {},
+    },
     /* Legacy API support */
     'legacy': {
       'type': 'boolean',
@@ -62351,7 +62413,7 @@ module.exports = {
       'type': 'string',
     },
   },
-  'required': ['id', 'windowType', 'team', 'callbacks', 'uniqueSelector', 'animationCode'],
+  'required': ['id', 'windowType', 'team', 'callbacks', 'uniqueSelector', 'animationCode', 'loading'],
   'additionalProperties': false,
 };
 
