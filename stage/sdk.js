@@ -61720,7 +61720,7 @@ module.exports={
     }
   },
   "env": "stage",
-  "version": "1.0.0-alpha.6"
+  "version": "1.0.0-alpha.7"
 }
 },{}],691:[function(require,module,exports){
 (function (process){
@@ -62715,7 +62715,7 @@ exports.TweakPublic = require('./tweak-public');
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-12 11:53:09
  * @Last modified by:   Matteo
- * @Last modified time: 2018-04-18 04:17:17
+ * @Last modified time: 2018-05-25 08:25:31
  */
 
 'use strict';
@@ -62749,8 +62749,8 @@ TweakLegacy.defaultOptions = {
   'method': 'POST',
   'headers': {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'user-agent': ['tweak-button', require('../../').config.env, require('../../').config.version].join('/') + ' (https://www.tweak.com)'
+    'Accept': 'application/json'
+    // 'user-agent': ['tweak-button', require('../../').config.env, require('../../').config.version].join('/') + ' (https://www.tweak.com)',
   }
 };
 
@@ -62901,7 +62901,7 @@ module.exports = function (TweakPublicV1) {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-13 03:03:00
  * @Last modified by:   Matteo
- * @Last modified time: 2018-04-19 08:15:29
+ * @Last modified time: 2018-05-25 08:25:36
  */
 
 'use strict';
@@ -62964,8 +62964,8 @@ TweakPublicV1.config = require('../../../').config.TweakPublic.v1;
 TweakPublicV1.defaultOptions = {
   'headers': {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'user-agent': ['tweak-button', require('../../../').config.env, require('../../../').config.version].join('/') + ' (https://www.tweak.com)'
+    'Accept': 'application/json'
+    // 'user-agent': ['tweak-button', require('../../../').config.env, require('../../../').config.version].join('/') + ' (https://www.tweak.com)',
   }
 };
 
