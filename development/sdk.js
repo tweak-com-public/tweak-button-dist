@@ -60526,7 +60526,7 @@ onloadCSS(stylesheet, function () {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2018-05-31 12:49:52
+ * @Last modified time: 2018-06-01 12:15:10
  */
 
 'use strict';
@@ -61152,6 +61152,7 @@ Bridge.prototype.urlData = function () {
 
   urlObj = {};
   urlObj.query = {};
+  urlObj.query['domain'] = location.origin;
   urlObj.query[Bridge.config.dataQueryKey] = bridge.toJSON();
 
   logger.log('debug', '[Bridge].urlData:', {
@@ -62628,7 +62629,7 @@ module.exports={
     }
   },
   "env": "development",
-  "version": "1.0.0-alpha.8"
+  "version": "1.0.0-alpha.9"
 }
 },{}],689:[function(require,module,exports){
 (function (process){
