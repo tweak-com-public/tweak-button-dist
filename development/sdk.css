@@ -2594,7 +2594,7 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-05 04:17:45
  * @Last modified by:   Matteo
- * @Last modified time: 2017-10-05 05:15:29
+ * @Last modified time: 2018-06-25 03:32:23
  */
 
 /*
@@ -2906,6 +2906,40 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 }
 .tweak-is-left {
   text-align: left;
+}
+
+.tweak-banner {
+  background: #fde073;
+  -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black;
+  left: 0;
+  line-height: 2.5;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 6001;
+}
+.tweak-banner-animated {
+  -webkit-animation: slideDown 2.5s 1.0s 1 ease forwards;
+  animation: slideDown 2.5s 1.0s 1 ease forwards;
+  -webkit-transform: translateY(-50px);
+  transform: translateY(-50px);
+}
+/* .tweak-banner-close {
+  cursor: pointer;
+}
+.cssanimations.csstransforms .tweak-banner-close {
+  display: none;
+} */
+@-webkit-keyframes slideDown {
+  0%, 100% { -webkit-transform: translateY(-50px); transform: translateY(-50px); }
+  10%, 90% { -webkit-transform: translateY(0px); transform: translateY(0px); }
+}
+@keyframes slideDown {
+  0%, 100% { -webkit-transform: translateY(-50px); transform: translateY(-50px); }
+  10%, 90% { -webkit-transform: translateY(0px); transform: translateY(0px); }
 }
 
 /**
