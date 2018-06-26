@@ -60924,7 +60924,7 @@ function onloadCSS(ss, callback) {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-20 11:10:37
  * @Last modified by:   Matteo
- * @Last modified time: 2018-06-25 02:49:59
+ * @Last modified time: 2018-06-26 08:53:46
  */
 
 /* global onloadCSS */
@@ -61151,25 +61151,25 @@ onloadCSS(stylesheet, function () {
     var browserNotSupported = false;
 
     // Check if browser and version are supported
-    if (bowser.safari && bowser.version < 10) {
+    if (bowser.safari) {
       urlUpgrade = 'https://www.apple.com/osx';
-      browserNotSupported = true;
-    } else if (bowser.chrome && bowser.version < 40) {
+      browserNotSupported = bowser.version < 10;
+    } else if (bowser.chrome) {
       urlUpgrade = 'https://www.google.com/chrome/';
-      browserNotSupported = true;
-    } else if (bowser.msie && bowser.version < 9) {
+      browserNotSupported = bowser.version < 40;
+    } else if (bowser.msie) {
       urlUpgrade = 'https://www.microsoft.com/windows/microsoft-edge';
-      browserNotSupported = true;
-    } else if (bowser.opera && bowser.version < 26) {
+      browserNotSupported = bowser.version < 9;
+    } else if (bowser.opera) {
       urlUpgrade = 'https://www.opera.com/';
-      browserNotSupported = true;
-    } else if (bowser.firefox && bowser.version < 25) {
+      browserNotSupported = bowser.version < 26;
+    } else if (bowser.firefox) {
       urlUpgrade = 'https://www.mozilla.org/firefox/new/';
-      browserNotSupported = true;
+      browserNotSupported = bowser.version < 25;
     }
 
     // If not supported show the banner
-    if (browserNotSupported) {
+    if (browserNotSupported || window.twDebug && window.twDebug.browserNotSupported) {
       // Message customized with browser and url to upgrade
       var message = format('<b>{browser}</b> is not supported. To function correctly, <a href="{urlUpgrade}">we recommend that you upgrade</a>.', {
         'browser': [bowser.name, bowser.version].join(' '),
@@ -61183,7 +61183,7 @@ onloadCSS(stylesheet, function () {
         'message': message
       });
 
-      document.body.appendChild(banner);
+      document.body.innerHTML += banner;
 
       return;
     }
@@ -63302,7 +63302,7 @@ module.exports={
     }
   },
   "env": "stage",
-  "version": "1.0.0-alpha.10"
+  "version": "1.0.0-alpha.11"
 }
 },{}],690:[function(require,module,exports){
 (function (process){
