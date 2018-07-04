@@ -62474,7 +62474,7 @@ module.exports = function (Bridge) {
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-20 11:11:27
  * @Last modified by:   Matteo
- * @Last modified time: 2018-05-31 03:19:09
+ * @Last modified time: 2018-07-04 07:48:38
  */
 
 'use strict';
@@ -62914,8 +62914,8 @@ Button.prototype.loadLegacySavedProductId = function (legacySavedProductId) {
 
   if (!bridge.get('legacy')) {
     throw new Error('Builder is not on legacy mode.');
-  } else if (bridge.get('userToken')) {
-    throw new Error('Builder is not on legacy mode.');
+  } else if (!bridge.get('userToken')) {
+    throw new Error('Legacy User Token is not specified.');
   }
 
   var bridgeData = bridge.getData();
@@ -63302,7 +63302,7 @@ module.exports={
     }
   },
   "env": "stage",
-  "version": "1.0.0-alpha.11"
+  "version": "1.0.0-alpha.12"
 }
 },{}],690:[function(require,module,exports){
 (function (process){
