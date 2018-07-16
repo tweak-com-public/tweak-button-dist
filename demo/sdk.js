@@ -61194,17 +61194,19 @@ onloadCSS(stylesheet, function () {
   Button.make();
 });
 
-},{"./lib":690,"./tpl":704,"bowser":132,"core-js/modules/es6.array.copy-within":299,"core-js/modules/es6.array.fill":300,"core-js/modules/es6.array.find":302,"core-js/modules/es6.array.find-index":301,"core-js/modules/es6.array.from":303,"core-js/modules/es6.array.iterator":304,"core-js/modules/es6.array.of":305,"core-js/modules/es6.function.name":306,"core-js/modules/es6.map":307,"core-js/modules/es6.math.acosh":308,"core-js/modules/es6.math.asinh":309,"core-js/modules/es6.math.atanh":310,"core-js/modules/es6.math.cbrt":311,"core-js/modules/es6.math.clz32":312,"core-js/modules/es6.math.cosh":313,"core-js/modules/es6.math.expm1":314,"core-js/modules/es6.math.fround":315,"core-js/modules/es6.math.hypot":316,"core-js/modules/es6.math.imul":317,"core-js/modules/es6.math.log10":318,"core-js/modules/es6.math.log1p":319,"core-js/modules/es6.math.log2":320,"core-js/modules/es6.math.sign":321,"core-js/modules/es6.math.sinh":322,"core-js/modules/es6.math.tanh":323,"core-js/modules/es6.math.trunc":324,"core-js/modules/es6.number.epsilon":325,"core-js/modules/es6.number.is-finite":326,"core-js/modules/es6.number.is-integer":327,"core-js/modules/es6.number.is-nan":328,"core-js/modules/es6.number.is-safe-integer":329,"core-js/modules/es6.number.max-safe-integer":330,"core-js/modules/es6.number.min-safe-integer":331,"core-js/modules/es6.object.assign":332,"core-js/modules/es6.object.freeze":333,"core-js/modules/es6.object.get-own-property-descriptor":334,"core-js/modules/es6.object.get-own-property-names":335,"core-js/modules/es6.object.get-prototype-of":336,"core-js/modules/es6.object.is":340,"core-js/modules/es6.object.is-extensible":337,"core-js/modules/es6.object.is-frozen":338,"core-js/modules/es6.object.is-sealed":339,"core-js/modules/es6.object.keys":341,"core-js/modules/es6.object.prevent-extensions":342,"core-js/modules/es6.object.seal":343,"core-js/modules/es6.object.set-prototype-of":344,"core-js/modules/es6.promise":345,"core-js/modules/es6.reflect.apply":346,"core-js/modules/es6.reflect.construct":347,"core-js/modules/es6.reflect.define-property":348,"core-js/modules/es6.reflect.delete-property":349,"core-js/modules/es6.reflect.get":352,"core-js/modules/es6.reflect.get-own-property-descriptor":350,"core-js/modules/es6.reflect.get-prototype-of":351,"core-js/modules/es6.reflect.has":353,"core-js/modules/es6.reflect.is-extensible":354,"core-js/modules/es6.reflect.own-keys":355,"core-js/modules/es6.reflect.prevent-extensions":356,"core-js/modules/es6.reflect.set":358,"core-js/modules/es6.reflect.set-prototype-of":357,"core-js/modules/es6.regexp.flags":359,"core-js/modules/es6.regexp.match":360,"core-js/modules/es6.regexp.replace":361,"core-js/modules/es6.regexp.search":362,"core-js/modules/es6.regexp.split":363,"core-js/modules/es6.set":364,"core-js/modules/es6.string.code-point-at":365,"core-js/modules/es6.string.ends-with":366,"core-js/modules/es6.string.from-code-point":367,"core-js/modules/es6.string.includes":368,"core-js/modules/es6.string.raw":369,"core-js/modules/es6.string.repeat":370,"core-js/modules/es6.string.starts-with":371,"core-js/modules/es6.symbol":372,"core-js/modules/es6.typed.array-buffer":373,"core-js/modules/es6.typed.data-view":374,"core-js/modules/es6.typed.float32-array":375,"core-js/modules/es6.typed.float64-array":376,"core-js/modules/es6.typed.int16-array":377,"core-js/modules/es6.typed.int32-array":378,"core-js/modules/es6.typed.int8-array":379,"core-js/modules/es6.typed.uint16-array":380,"core-js/modules/es6.typed.uint32-array":381,"core-js/modules/es6.typed.uint8-array":382,"core-js/modules/es6.typed.uint8-clamped-array":383,"core-js/modules/es6.weak-map":384,"core-js/modules/es6.weak-set":385,"core-js/modules/es7.array.includes":386,"core-js/modules/es7.object.entries":387,"core-js/modules/es7.object.get-own-property-descriptors":388,"core-js/modules/es7.object.values":389,"core-js/modules/es7.string.pad-end":390,"core-js/modules/es7.string.pad-start":391,"core-js/modules/web.dom.iterable":392,"core-js/modules/web.immediate":393,"core-js/modules/web.timers":394,"fg-loadcss":512,"regenerator-runtime/runtime":617,"string-template":635,"uuid/v4":661}],685:[function(require,module,exports){
+},{"./lib":690,"./tpl":705,"bowser":132,"core-js/modules/es6.array.copy-within":299,"core-js/modules/es6.array.fill":300,"core-js/modules/es6.array.find":302,"core-js/modules/es6.array.find-index":301,"core-js/modules/es6.array.from":303,"core-js/modules/es6.array.iterator":304,"core-js/modules/es6.array.of":305,"core-js/modules/es6.function.name":306,"core-js/modules/es6.map":307,"core-js/modules/es6.math.acosh":308,"core-js/modules/es6.math.asinh":309,"core-js/modules/es6.math.atanh":310,"core-js/modules/es6.math.cbrt":311,"core-js/modules/es6.math.clz32":312,"core-js/modules/es6.math.cosh":313,"core-js/modules/es6.math.expm1":314,"core-js/modules/es6.math.fround":315,"core-js/modules/es6.math.hypot":316,"core-js/modules/es6.math.imul":317,"core-js/modules/es6.math.log10":318,"core-js/modules/es6.math.log1p":319,"core-js/modules/es6.math.log2":320,"core-js/modules/es6.math.sign":321,"core-js/modules/es6.math.sinh":322,"core-js/modules/es6.math.tanh":323,"core-js/modules/es6.math.trunc":324,"core-js/modules/es6.number.epsilon":325,"core-js/modules/es6.number.is-finite":326,"core-js/modules/es6.number.is-integer":327,"core-js/modules/es6.number.is-nan":328,"core-js/modules/es6.number.is-safe-integer":329,"core-js/modules/es6.number.max-safe-integer":330,"core-js/modules/es6.number.min-safe-integer":331,"core-js/modules/es6.object.assign":332,"core-js/modules/es6.object.freeze":333,"core-js/modules/es6.object.get-own-property-descriptor":334,"core-js/modules/es6.object.get-own-property-names":335,"core-js/modules/es6.object.get-prototype-of":336,"core-js/modules/es6.object.is":340,"core-js/modules/es6.object.is-extensible":337,"core-js/modules/es6.object.is-frozen":338,"core-js/modules/es6.object.is-sealed":339,"core-js/modules/es6.object.keys":341,"core-js/modules/es6.object.prevent-extensions":342,"core-js/modules/es6.object.seal":343,"core-js/modules/es6.object.set-prototype-of":344,"core-js/modules/es6.promise":345,"core-js/modules/es6.reflect.apply":346,"core-js/modules/es6.reflect.construct":347,"core-js/modules/es6.reflect.define-property":348,"core-js/modules/es6.reflect.delete-property":349,"core-js/modules/es6.reflect.get":352,"core-js/modules/es6.reflect.get-own-property-descriptor":350,"core-js/modules/es6.reflect.get-prototype-of":351,"core-js/modules/es6.reflect.has":353,"core-js/modules/es6.reflect.is-extensible":354,"core-js/modules/es6.reflect.own-keys":355,"core-js/modules/es6.reflect.prevent-extensions":356,"core-js/modules/es6.reflect.set":358,"core-js/modules/es6.reflect.set-prototype-of":357,"core-js/modules/es6.regexp.flags":359,"core-js/modules/es6.regexp.match":360,"core-js/modules/es6.regexp.replace":361,"core-js/modules/es6.regexp.search":362,"core-js/modules/es6.regexp.split":363,"core-js/modules/es6.set":364,"core-js/modules/es6.string.code-point-at":365,"core-js/modules/es6.string.ends-with":366,"core-js/modules/es6.string.from-code-point":367,"core-js/modules/es6.string.includes":368,"core-js/modules/es6.string.raw":369,"core-js/modules/es6.string.repeat":370,"core-js/modules/es6.string.starts-with":371,"core-js/modules/es6.symbol":372,"core-js/modules/es6.typed.array-buffer":373,"core-js/modules/es6.typed.data-view":374,"core-js/modules/es6.typed.float32-array":375,"core-js/modules/es6.typed.float64-array":376,"core-js/modules/es6.typed.int16-array":377,"core-js/modules/es6.typed.int32-array":378,"core-js/modules/es6.typed.int8-array":379,"core-js/modules/es6.typed.uint16-array":380,"core-js/modules/es6.typed.uint32-array":381,"core-js/modules/es6.typed.uint8-array":382,"core-js/modules/es6.typed.uint8-clamped-array":383,"core-js/modules/es6.weak-map":384,"core-js/modules/es6.weak-set":385,"core-js/modules/es7.array.includes":386,"core-js/modules/es7.object.entries":387,"core-js/modules/es7.object.get-own-property-descriptors":388,"core-js/modules/es7.object.values":389,"core-js/modules/es7.string.pad-end":390,"core-js/modules/es7.string.pad-start":391,"core-js/modules/web.dom.iterable":392,"core-js/modules/web.immediate":393,"core-js/modules/web.timers":394,"fg-loadcss":512,"regenerator-runtime/runtime":617,"string-template":635,"uuid/v4":661}],685:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2018-06-01 12:15:10
+ * @Last modified time: 2018-07-16 08:34:08
  */
 
 'use strict';
 
 // Logger
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var logger = require('./logger');
 // Async - Waterfall
@@ -61238,18 +61240,21 @@ var TweakPublicV1 = require('./rest').TweakPublic.V1;
  * @param       {string}  bridgeData.windowType              Type of windows where to open the HTML Builder
  * @param       {string}  bridgeData.input                   DOM selector for element where to add the image src once generated
  * @param       {object}  bridgeData.team                    Definitions for Team session
- * @param       {object}  bridgeData.team.clientKey          Team.clientKey for Tweak API Team validation
+ * @param       {string}  bridgeData.team.clientKey          Team.clientKey for Tweak API Team validation
+ * @param       {object}  bridgeData.teamCustomer            Definitions for Team Customer session
+ * @param       {string}  bridgeData.teamCustomer.id         TeamCustomer.id for Tweak Public API TeamCustomer validation
  * @param       {object}  bridgeData.teamMember              Definitions for Team Member session
- * @param       {object}  bridgeData.teamMember.email        Email for a new Team Member registration
- * @param       {object}  bridgeData.teamMember.key          TeamMember.key for Tweak API TeamMember validation
+ * @param       {string}  bridgeData.teamMember.email        Email for a new Team Member registration
+ * @param       {string}  bridgeData.teamMember.key          TeamMember.key for Tweak API TeamMember validation
+ * @param       {string}  bridgeData.accessToken             Tweak Access Token for Private APIs
  * @param       {object}  bridgeData.portal                  Definitions for Portal session
- * @param       {object}  bridgeData.portal.id               Porta.id for Tweak API Portal validation
+ * @param       {string}  bridgeData.portal.id               Porta.id for Tweak API Portal validation
  * @param       {object}  bridgeData.design                  Definitions for Design to launch on HTML Builder startup
- * @param       {object}  bridgeData.design.id               Design.id from Tweak API
+ * @param       {string}  bridgeData.design.id               Design.id from Tweak API
  * @param       {object}  bridgeData.template                Definitions for Template to launch on HTML Builder startup
- * @param       {object}  bridgeData.template.id             Template.id from Tweak API
- * @param       {object}  bridgeData.tweakTemplate           Definitions for TweakTemplate to launch on HTML Builder startup
- * @param       {object}  bridgeData.tweakTemplate.id        TweakTemplate.id from Tweak API
+ * @param       {string}  bridgeData.template.id             Template.id from Tweak API
+ * @param       {array}   bridgeData.dynamicDatas            Tweak DynamicData array
+ * @param       {string}  bridgeData.dynamicDatas[].id       Tweak DynamicData.id
  * @param       {object}  bridgeData.callbacks               List of callbacks
  * @param       {string}  bridgeData.uniqueSelector          Unique DOM selector
  * @param       {number}  bridgeData.animationCode           Animation code
@@ -61367,12 +61372,20 @@ Bridge.parseElButton = function (elButton, cb) {
     delete bridgeData.team;
   }
 
+  bridgeData.teamCustomer = {};
+  if (elButton.dataset.customer) {
+    bridgeData.teamCustomer.id = elButton.dataset.customer;
+  }
+  if (Object.keys(bridgeData.teamCustomer).length === 0) {
+    delete bridgeData.teamCustomer;
+  }
+
   bridgeData.teamMember = {};
   if (elButton.dataset.member) {
     bridgeData.teamMember.key = elButton.dataset.member;
   }
-  if (elButton.dataset.email) {
-    bridgeData.teamMember.email = elButton.dataset.email;
+  if (elButton.dataset.memberEmail) {
+    bridgeData.teamMember.email = elButton.dataset.memberEmail;
   }
   if (Object.keys(bridgeData.teamMember).length === 0) {
     delete bridgeData.teamMember;
@@ -61402,12 +61415,58 @@ Bridge.parseElButton = function (elButton, cb) {
     delete bridgeData.template;
   }
 
-  bridgeData.tweakTemplate = {};
-  if (elButton.dataset.tweakTemplate) {
-    bridgeData.tweakTemplate.id = elButton.dataset.tweakTemplate;
+  bridgeData.dynamicDatas = [];
+  if (elButton.dataset.dynamicDatas) {
+    var dynamicDatas = elButton.dataset.dynamicDatas;
+
+    try {
+      dynamicDatas = JSON.parse(dynamicDatas);
+    } catch (e) {
+      try {
+        dynamicDatas = dynamicDatas.split(',');
+      } catch (e) {
+        logger.log('warn', '[Bridge].parseElButton:', 'DynamicDatas value cannot be parsed!', {
+          dynamicDatas: dynamicDatas
+        });
+      }
+    }
+
+    try {
+      dynamicDatas = dynamicDatas.filter(function (dd) {
+        if ((typeof dd === 'undefined' ? 'undefined' : _typeof(dd)) === 'object' && (!dd.hasOwnProperty('id') || !dd.id)) {
+          logger.log('warn', '[Bridge].parseElButton:', 'DynamicDatas element misses id key when object!', {
+            dynamicDatas: dynamicDatas,
+            dynamicData: dd
+          });
+          return false;
+        } else if (typeof dd !== 'string') {
+          logger.log('warn', '[Bridge].parseElButton:', 'DynamicDatas element must be an object or a string!', {
+            dynamicDatas: dynamicDatas,
+            dynamicData: dd
+          });
+          return false;
+        }
+
+        return true;
+      }).map(function (dd) {
+        if ((typeof dd === 'undefined' ? 'undefined' : _typeof(dd)) === 'object') {
+          return dd;
+        }
+
+        return {
+          id: dd
+        };
+      });
+    } catch (e) {
+      logger.log('warn', '[Bridge].parseElButton:', 'DynamicDatas value cannot be parsed!', {
+        dynamicDatas: dynamicDatas
+      });
+    }
+
+    bridgeData.dynamicDatas = dynamicDatas;
   }
-  if (Object.keys(bridgeData.tweakTemplate).length === 0) {
-    delete bridgeData.tweakTemplate;
+  if (bridgeData.dynamicDatas.length === 0) {
+    delete bridgeData.dynamicDatas;
   }
 
   if (elButton.dataset.animation) {
@@ -61435,7 +61494,7 @@ Bridge.parseElButton = function (elButton, cb) {
   bridgeData.callbacks = {};
 
   if (elButton.dataset.cbLoginregister) {
-    bridgeData.callbacks.onLegacyLoginRegister = elButton.dataset.cbLoginregister;
+    bridgeData.callbacks.onLoginRegister = elButton.dataset.cbLoginregister;
   }
 
   if (elButton.dataset.cbInit) {
@@ -61689,12 +61748,6 @@ Bridge.prototype.authVerify = function (cb) {
     return cb(null, bridge);
   }
 
-  // TODO: remove this as soon as @pedro comes back with a working API
-  // var bridgeData = bridge.getData();
-  // bridgeData.team.clientKey = '6ab9319ecb00d044f0a5749440a3f134ae153105';
-  // bridge.setData(bridgeData);
-  // return cb(null, bridge);
-
   asyncWaterfall([function (next) {
     if (!bridge.get('legacy')) {
       return next(null, bridge.get('team.clientKey'));
@@ -61728,6 +61781,22 @@ Bridge.prototype.authVerify = function (cb) {
 
     bridge.verifyTeamClientKey(next);
   }, function (next) {
+    var teamCustomerId = bridge.get('teamCustomer.id');
+    var portalId = bridge.get('portal.id');
+
+    // Ignore if TeamCustomer isn't linked to a Portal
+    if (!teamCustomerId || !portalId) {
+      return next(null, false);
+    }
+
+    bridge.getTeamCustomerToken(next);
+  }, function (teamCustomerToken, next) {
+    if (teamCustomerToken) {
+      var bridgeData = bridge.getData();
+      bridgeData.accessToken = teamCustomerToken.id;
+      bridge.setData(bridgeData);
+    }
+
     next(null, bridge);
   }], cb);
 };
@@ -61774,7 +61843,7 @@ Bridge.prototype.verifyTeamClientKey = function (cb) {
   });
 
   if (!bridge.apiClient.hasTeamKey()) {
-    var err = new Error('Bridge doesn\'t have any Team clientKey.');
+    var err = new Error('Bridge doesn\'t have any Team clientKey specified.');
     err.status = 'MISSING_TEAM_CLIENTKEY';
     err.bridge = bridge;
 
@@ -61788,7 +61857,7 @@ Bridge.prototype.verifyTeamClientKey = function (cb) {
 
   asyncWaterfall([bridge.apiClient.getAuthValidate.bind(bridge.apiClient), function (body, next) {
     if (!body || !body.id) {
-      var err = new Error('Bridge has invalid Team clientKey.');
+      var err = new Error('Bridge has invalid Team clientKey specified.');
       err.status = 'INVALID_TEAM_CLIENTKEY';
       err.bridge = bridge;
 
@@ -61808,6 +61877,72 @@ Bridge.prototype.verifyTeamClientKey = function (cb) {
   }], cb);
 };
 
+Bridge.prototype.getTeamCustomerToken = function (cb) {
+  var bridge = this;
+
+  logger.log('debug', '[Bridge].getTeamCustomerToken:', {
+    'bridge': bridge
+  });
+
+  if (!bridge.apiClient.hasTeamKey()) {
+    var err = new Error('Bridge doesn\'t have any Team clientKey specified.');
+    err.status = 'MISSING_TEAM_CLIENTKEY';
+    err.bridge = bridge;
+
+    logger.log('error', '[Bridge].getTeamCustomerToken error:', err.message, {
+      'status': err.status,
+      'bridge': err.bridge
+    });
+
+    return cb(err);
+  } else if (!bridge.get('teamCustomer.id')) {
+    var err = new Error('Bridge doesn\'t have any TeamCustomer id specified.');
+    err.status = 'MISSING_TEAM_CUSTOMER_ID';
+    err.bridge = bridge;
+
+    logger.log('error', '[Bridge].getTeamCustomerToken error:', err.message, {
+      'status': err.status,
+      'bridge': err.bridge
+    });
+
+    return cb(err);
+  } else if (!bridge.get('portal.id')) {
+    var err = new Error('Bridge doesn\'t have any Portal id specified.');
+    err.status = 'MISSING_PORTAL_ID';
+    err.bridge = bridge;
+
+    logger.log('error', '[Bridge].getTeamCustomerToken error:', err.message, {
+      'status': err.status,
+      'bridge': err.bridge
+    });
+
+    return cb(err);
+  }
+
+  asyncWaterfall([asyncConstant({
+    'id': bridge.get('teamCustomer.id'),
+    'fk': bridge.get('portal.id')
+  }), bridge.apiClient.postCustomersByIdPortalsByFkAuth.bind(bridge.apiClient), function (body, next) {
+    if (!body || !body.id) {
+      var err = new Error('Bridge has invalid match between Team clientKey, TeamCustomer id and Portal id.');
+      err.status = 'INVALID_AUTH';
+      err.bridge = bridge;
+
+      logger.log('error', '[Bridge].getTeamCustomerToken response error:', err.message, {
+        'status': err.status,
+        'bridge': err.bridge
+      });
+      return next(err);
+    }
+
+    logger.log('debug', '[Bridge].getTeamCustomerToken response:', {
+      'bridge': bridge,
+      'body': body
+    });
+
+    next(null, body);
+  }], cb);
+};
 // END - AUTH
 // ------------------------------------------------
 
@@ -62034,7 +62169,7 @@ module.exports = Bridge;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:43:24
  * @Last modified by:   Matteo
- * @Last modified time: 2018-05-31 02:30:05
+ * @Last modified time: 2018-07-13 10:47:06
  */
 
 'use strict';
@@ -62050,6 +62185,10 @@ var extend = require('extend');
 var url = require('url');
 // Humps
 var humps = require('humps');
+// Async - Waterfall
+var asyncWaterfall = require('async/waterfall');
+// Async - Constant
+var asyncConstant = require('async/constant');
 
 module.exports = function (Bridge) {
   // Static vars
@@ -62180,6 +62319,11 @@ module.exports = function (Bridge) {
 
       bridge.socketSend(socketPrefix, 'legacy-data', data);
     } else {
+      data.accessToken = bridge.get('accessToken');
+      data.portalId = bridge.get('portal.id');
+      data.designId = bridge.get('design.id');
+      data.templateId = bridge.get('template.id');
+
       bridge.socketSend(socketPrefix, 'data', data);
     }
   };
@@ -62289,11 +62433,11 @@ module.exports = function (Bridge) {
   };
 
   /**
-   * Tweak Builder (in legacy mode) is requesting a login/register action
+   * Tweak Builder is requesting a login/register action
    * @param  {object} e Event
    */
-  Bridge.prototype.ons.builder['legacy-loginRegister'] = function (e) {
-    logger.log('debug', '[Bridges/Builder].ons.legacy-loginRegister:', {
+  Bridge.prototype.ons.builder['loginRegister'] = function (e) {
+    logger.log('debug', '[Bridges/Builder].ons.loginRegister:', {
       'e': e
     });
 
@@ -62303,10 +62447,46 @@ module.exports = function (Bridge) {
 
     var data = e.data;
 
-    if (bridge.get('callbacks.onLegacyLoginRegister')) {
-      window[bridge.get('callbacks.onLegacyLoginRegister')](function (legacyUserToken) {
-        bridge.socketSend(socketPrefix, 'legacy-authUser', {
-          'legacyUserToken': legacyUserToken
+    if (bridge.get('callbacks.onLoginRegister')) {
+      // (in legacy mode)
+      if (bridge.get('legacy')) {
+        window[bridge.get('callbacks.onLoginRegister')](function (legacyUserToken) {
+          bridge.socketSend(socketPrefix, 'legacy-authUser', {
+            'legacyUserToken': legacyUserToken
+          });
+        });
+
+        return;
+      }
+
+      window[bridge.get('callbacks.onLoginRegister')](function (auth) {
+        if (!bridge.get('teamCustomer.id') && !auth.teamCustomer && !auth.teamCustomer.id) {
+          throw new Error('TeamCustomer id must be passed');
+        }
+        if (!bridge.get('portal.id') && !auth.portal && !auth.portal.id) {
+          throw new Error('Portal id must be passed');
+        }
+
+        // Store TeamCustomer and Portal
+        var bridgeData = bridge.getData();
+        bridgeData.teamCustomer = extend(true, {}, bridgeData.teamCustomer, auth.teamCustomer);
+        bridgeData.portal = extend(true, {}, bridgeData.portal, auth.portal);
+        bridge.setData(bridgeData);
+
+        bridge.getTeamCustomerToken(function (err, teamCustomerToken) {
+          if (err) {
+            throw err;
+          }
+
+          if (teamCustomerToken) {
+            var bridgeData = bridge.getData();
+            bridgeData.accessToken = teamCustomerToken.id;
+            bridge.setData(bridgeData);
+          }
+
+          bridge.socketSend(socketPrefix, 'authWithAccessToken', {
+            'accessToken': teamCustomerToken.id
+          });
         });
       });
     }
@@ -62350,7 +62530,7 @@ module.exports = function (Bridge) {
   return Bridge;
 };
 
-},{"../":690,"../../tpl":704,"../logger":691,"extend":510,"humps":531,"string-template":635,"url":653}],687:[function(require,module,exports){
+},{"../":690,"../../tpl":705,"../logger":691,"async/constant":60,"async/waterfall":103,"extend":510,"humps":531,"string-template":635,"url":653}],687:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:39:55
@@ -62469,12 +62649,12 @@ module.exports = function (Bridge) {
   return Bridge;
 };
 
-},{"../":690,"../../tpl":704,"../logger":691,"extend":510,"string-template":635}],688:[function(require,module,exports){
+},{"../":690,"../../tpl":705,"../logger":691,"extend":510,"string-template":635}],688:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-20 11:11:27
  * @Last modified by:   Matteo
- * @Last modified time: 2018-07-04 07:48:38
+ * @Last modified time: 2018-07-16 11:30:39
  */
 
 'use strict';
@@ -62554,6 +62734,14 @@ function Button(buttonData) {
    */
   this.getBridge = function () {
     return this._bridge;
+  };
+
+  /**
+   * Get Tweak API Client instance
+   * @return {TweakPublicV1} Tweak Public API Rest Client
+   */
+  this.getTweakApiClient = function () {
+    return this._bridge.apiClient;
   };
 
   // END - PUBLIC METHODS
@@ -62839,6 +63027,117 @@ Button.prototype.isBuilderReady = function () {
   return bridge.vars.builder.status === Bridge.BUILDER_STATUS_READY;
 };
 
+Button.prototype.authTeamCustomer = function (teamCustomerId, portalId) {
+  logger.log('debug', '[Button/Builder].authTeamCustomerById:', {
+    'teamCustomerId': teamCustomerId,
+    'portalId': portalId
+  });
+
+  var bridge = this.getBridge();
+
+  if (bridge.vars.builder.status !== Bridge.BUILDER_STATUS_READY) {
+    throw new Error('Builder is not ready yet. Do this after onBuilderReady');
+  }
+
+  var BuilderConfig = require('./').config.Bridge.s.builder;
+  var socketPrefix = BuilderConfig.socketPrefix;
+
+  if (bridge.get('legacy')) {
+    throw new Error('Builder is on legacy mode.');
+  }
+
+  var bridgeData = bridge.getData();
+  bridgeData.teamCustomer = bridgeData.teamCustomer || {};
+  bridgeData.teamCustomer.id = teamCustomerId;
+  bridgeData.portal = bridgeData.portal || {};
+  bridgeData.portal.id = portalId || bridgeData.portal.id;
+  bridge.setData(bridgeData);
+
+  bridge.getTeamCustomerToken(function (err, teamCustomerToken) {
+    if (teamCustomerToken) {
+      var bridgeData = bridge.getData();
+      bridgeData.accessToken = teamCustomerToken.id;
+      bridge.setData(bridgeData);
+    }
+
+    var data = {
+      'accessToken': teamCustomerToken.id
+    };
+
+    bridge.socketSend(socketPrefix, 'authWithAccessToken', data);
+  });
+};
+
+Button.prototype.loadTemplateById = function (templateId) {
+  logger.log('debug', '[Button/Builder].loadTemplateById:', {
+    'templateId': templateId
+  });
+
+  var bridge = this.getBridge();
+
+  if (bridge.vars.builder.status !== Bridge.BUILDER_STATUS_READY) {
+    throw new Error('Builder is not ready yet. Do this after onBuilderReady');
+  }
+
+  var BuilderConfig = require('./').config.Bridge.s.builder;
+  var socketPrefix = BuilderConfig.socketPrefix;
+
+  if (bridge.get('legacy')) {
+    throw new Error('Builder is on legacy mode.');
+  }
+
+  var bridgeData = bridge.getData();
+  delete bridgeData.productId;
+  bridgeData.template = {};
+  bridgeData.template.id = templateId;
+  bridge.setData(bridgeData);
+
+  var data = {
+    'templateId': templateId
+  };
+
+  bridge.socketSend(socketPrefix, 'loadTemplate', data);
+};
+
+Button.prototype.loadDesignById = function (designId) {
+  logger.log('debug', '[Button/Builder].loadDesignById:', {
+    'designId': designId
+  });
+
+  var bridge = this.getBridge();
+
+  if (bridge.vars.builder.status !== Bridge.BUILDER_STATUS_READY) {
+    throw new Error('Builder is not ready yet. Do this after onBuilderReady');
+  }
+
+  var BuilderConfig = require('./').config.Bridge.s.builder;
+  var socketPrefix = BuilderConfig.socketPrefix;
+
+  if (bridge.get('legacy')) {
+    throw new Error('Builder is on legacy mode.');
+  } else if (!bridge.get('teamCustomer.id') || !bridge.get('portal.id')) {
+    throw new Error('No Team Customer authenticated or missing Portal selection.');
+  }
+
+  var bridgeData = bridge.getData();
+  delete bridgeData.productId;
+  bridgeData.design = {};
+  bridgeData.design.id = designId;
+  bridge.setData(bridgeData);
+
+  var data = {
+    'designId': designId
+  };
+
+  bridge.socketSend(socketPrefix, 'loadDesign', data);
+};
+
+// ------------------------------------------------
+// END - BUILDER
+
+// BUILDER LEGACY
+// ------------------------------------------------
+
 Button.prototype.setLegacyUserToken = function (legacyUserToken) {
   logger.log('debug', '[Button/Builder].setLegacyUserToken:', {
     'legacyUserToken': legacyUserToken
@@ -62931,7 +63230,7 @@ Button.prototype.loadLegacySavedProductId = function (legacySavedProductId) {
 };
 
 // ------------------------------------------------
-// END - BUILDER
+// END - BUILDER LEGACY
 
 /**
  * @return {Button} Button constructor
@@ -63298,11 +63597,17 @@ module.exports={
         "url": {
           "pathname": "Auth/validate"
         }
+      },
+      "customersByIdPortalsByFkAuth": {
+        "method": "post",
+        "url": {
+          "pathname": "Customers/{id}/portals/{fk}/auth"
+        }
       }
     }
   },
   "env": "demo",
-  "version": "1.0.0-alpha.12"
+  "version": "1.0.0-alpha.13"
 }
 },{}],690:[function(require,module,exports){
 (function (process){
@@ -63676,7 +63981,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-05-31 12:47:24
+ * @Last modified time: 2018-07-13 10:52:23
  */
 
 'use strict';
@@ -63728,6 +64033,16 @@ module.exports = {
       'anyOf': [{ 'required': ['clientKey'] }, { 'required': ['domain'] }],
       'additionalProperties': false
     },
+    'teamCustomer': {
+      'type': 'object',
+      'properties': {
+        'id': {
+          'type': 'string'
+        }
+      },
+      'required': ['id'],
+      'additionalProperties': false
+    },
     'teamMember': {
       'type': 'object',
       'properties': {
@@ -63737,13 +64052,13 @@ module.exports = {
         'email': {
           'type': 'string',
           'format': 'email'
-        },
-        'accessToken': {
-          'type': 'string'
         }
       },
-      'oneOf': [{ 'required': ['key'] }, { 'required': ['email'] }, { 'required': ['accessToken'] }],
+      'oneOf': [{ 'required': ['key'] }, { 'required': ['email'] }],
       'additionalProperties': false
+    },
+    'accessToken': {
+      'type': 'string'
     },
     'portal': {
       'type': 'object',
@@ -63752,6 +64067,7 @@ module.exports = {
           'type': 'string'
         }
       },
+      'required': ['id'],
       'additionalProperties': false
     },
     'design': {
@@ -63761,6 +64077,7 @@ module.exports = {
           'type': 'string'
         }
       },
+      'required': ['id'],
       'additionalProperties': false
     },
     'template': {
@@ -63770,29 +64087,29 @@ module.exports = {
           'type': 'string'
         }
       },
+      'required': ['id'],
       'additionalProperties': false
     },
-    'tweakTemplate': {
-      'type': 'object',
-      'properties': {
-        'id': {
-          'type': 'string'
-        }
+    'dynamicDatas': {
+      'type': 'array',
+      'items': {
+        'type': 'object',
+        'properties': {
+          'id': {
+            'type': 'string'
+          }
+        },
+        'required': ['id'],
+        'additionalProperties': false
       },
-      'additionalProperties': false
+      'additionalItems': false
     },
     'callbacks': {
       'type': 'object',
       'properties': {
-        // when Teams/:id/teamMembers/register is called
-        'onMemberRegister': {
-          'type': 'string',
-          'jsCallback': {
-            'args': 2
-          }
-        },
-        // when a login or registration is required
-        'onLegacyLoginRegister': {
+        // when a login or a registration is required
+        // and when a login or registration is required through legacy API
+        'onLoginRegister': {
           'type': 'string',
           'jsCallback': {
             'args': 1
@@ -64452,7 +64769,7 @@ module.exports = TweakLegacy;
 
 exports.V1 = require('./v1');
 
-},{"./v1":703}],702:[function(require,module,exports){
+},{"./v1":704}],702:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-12 11:52:53
@@ -64493,9 +64810,60 @@ module.exports = function (TweakPublicV1) {
 },{"../../../logger":691,"extend":510,"string-template":635}],703:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
+ * @Date:   2018-07-04 11:38:59
+ * @Last modified by:   Matteo
+ * @Last modified time: 2018-07-04 11:50:39
+ */
+
+'use strict';
+
+// Logger
+
+var logger = require('../../../logger');
+// Extend
+var extend = require('extend');
+// String Template
+var format = require('string-template');
+
+module.exports = function (TweakPublicV1) {
+  /**
+  * POST Customers/:id/portals/:fk/auth
+  * @method POST
+  * @param  {object}   params    Parameters
+  * @param  {string}   params.id TeamCustomer.id
+  * @param  {string}   params.fk Portal.id
+  * @param  {function} cb        Callback
+  */
+  TweakPublicV1.prototype.postCustomersByIdPortalsByFkAuth = function (params, cb) {
+    var client = this;
+
+    if (!params) {
+      throw new Error('Parameters are required');
+    } else if (!params.id) {
+      throw new Error('Parameter id is required');
+    } else if (!params.fk) {
+      throw new Error('Parameter fk is required');
+    }
+
+    var config = TweakPublicV1.config.customersByIdPortalsByFkAuth;
+
+    var method = config.method;
+    var urlObj = config.url;
+
+    urlObj.pathname = format(urlObj.pathname, params);
+
+    client.request(method, urlObj, {}, cb);
+  };
+
+  return TweakPublicV1;
+};
+
+},{"../../../logger":691,"extend":510,"string-template":635}],704:[function(require,module,exports){
+/**
+ * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-13 03:03:00
  * @Last modified by:   Matteo
- * @Last modified time: 2018-05-25 08:25:36
+ * @Last modified time: 2018-07-16 11:37:33
  */
 
 'use strict';
@@ -64621,11 +64989,53 @@ TweakPublicV1.prototype.url = function (customUrl) {
 };
 
 /**
+ * Request with POST method
+ * @param  {object}   customUrl Custom URL object
+ * @param  {object}   options   Custom Client Options
+ * @param  {function} cb        Callback
+ * @return {Promise}  Promise (undefined just if cb is defined)
+ */
+TweakPublicV1.prototype.post = function (requestUrl, options, cb) {
+  return this.request('post', requestUrl, options, cb);
+};
+/**
+ * Request with GET method
+ * @param  {object}   customUrl Custom URL object
+ * @param  {object}   options   Custom Client Options
+ * @param  {function} cb        Callback
+ * @return {Promise}  Promise (undefined just if cb is defined)
+ */
+TweakPublicV1.prototype.get = function (requestUrl, options, cb) {
+  return this.request('get', requestUrl, options, cb);
+};
+/**
+ * Request with PUT method
+ * @param  {object}   customUrl Custom URL object
+ * @param  {object}   options   Custom Client Options
+ * @param  {function} cb        Callback
+ * @return {Promise}  Promise (undefined just if cb is defined)
+ */
+TweakPublicV1.prototype.put = function (requestUrl, options, cb) {
+  return this.request('put', requestUrl, options, cb);
+};
+/**
+ * Request with DELETE method
+ * @param  {object}   customUrl Custom URL object
+ * @param  {object}   options   Custom Client Options
+ * @param  {function} cb        Callback
+ * @return {Promise}  Promise (undefined just if cb is defined)
+ */
+TweakPublicV1.prototype.delete = function (requestUrl, options, cb) {
+  return this.request('delete', requestUrl, options, cb);
+};
+
+/**
  * Request
  * @param  {string}   method    Client method
  * @param  {object}   customUrl Custom URL object
  * @param  {object}   options   Custom Client Options
  * @param  {function} cb        Callback
+ * @return {Promise}  Promise (undefined just if cb is defined)
  */
 TweakPublicV1.prototype.request = function (method, requestUrl, options, cb) {
   var client = this;
@@ -64642,7 +65052,7 @@ TweakPublicV1.prototype.request = function (method, requestUrl, options, cb) {
     'args': options
   });
 
-  client.restClient.request(options).then(function (resp) {
+  var promise = client.restClient.request(options).then(function (resp) {
     var data = resp.data;
     var status = resp.status;
     var statusText = resp.statusText;
@@ -64659,21 +65069,35 @@ TweakPublicV1.prototype.request = function (method, requestUrl, options, cb) {
       var err = new Error('Request error.');
       err.response = resp;
 
-      return cb(err);
+      throw err;
     }
 
-    cb(null, data);
+    if (cb) {
+      cb(null, data);
+    } else {
+      return data;
+    }
   }).catch(function (err) {
-    cb(err);
+    if (cb) {
+      cb(err);
+    } else {
+      throw err;
+    }
   });
+
+  if (!cb) {
+    return promise;
+  }
 };
 
 // Extend using Auth
 TweakPublicV1 = require('./auth')(TweakPublicV1);
+// Extend using Customer
+TweakPublicV1 = require('./customer')(TweakPublicV1);
 
 module.exports = TweakPublicV1;
 
-},{"../../../":690,"../../../logger":691,"./auth":702,"axios":104,"extend":510,"url":653}],704:[function(require,module,exports){
+},{"../../../":690,"../../../logger":691,"./auth":702,"./customer":703,"axios":104,"extend":510,"url":653}],705:[function(require,module,exports){
 /**
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-25 04:07:34
