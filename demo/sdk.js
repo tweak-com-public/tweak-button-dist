@@ -57650,7 +57650,7 @@ module.exports = Bridge;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:43:24
  * @Last modified by:   Matteo
- * @Last modified time: 2018-07-13 10:47:06
+ * @Last modified time: 2018-08-01 09:13:18
  */
 'use strict'; // Logger
 
@@ -57914,6 +57914,11 @@ module.exports = function (Bridge) {
       // (in legacy mode)
       if (bridge.get('legacy')) {
         window[bridge.get('callbacks.onLoginRegister')](function (legacyUserToken) {
+          if (!legacyUserToken) {
+            bridge.socketSend(socketPrefix, 'legacy-authUser', null);
+            return;
+          }
+
           bridge.socketSend(socketPrefix, 'legacy-authUser', {
             'legacyUserToken': legacyUserToken
           });
@@ -57922,11 +57927,12 @@ module.exports = function (Bridge) {
       }
 
       window[bridge.get('callbacks.onLoginRegister')](function (auth) {
-        if (!bridge.get('teamCustomer.id') && !auth.teamCustomer && !auth.teamCustomer.id) {
+        if (!auth) {
+          bridge.socketSend(socketPrefix, 'authWithAccessToken', null);
+          return;
+        } else if (!bridge.get('teamCustomer.id') && (!auth.teamCustomer || !auth.teamCustomer.id)) {
           throw new Error('TeamCustomer id must be passed');
-        }
-
-        if (!bridge.get('portal.id') && !auth.portal && !auth.portal.id) {
+        } else if (!bridge.get('portal.id') && (!auth.portal || !auth.portal.id)) {
           throw new Error('Portal id must be passed');
         } // Store TeamCustomer and Portal
 
@@ -59055,7 +59061,7 @@ module.exports={
     }
   },
   "env": "demo",
-  "version": "1.0.0-alpha.14"
+  "version": "1.0.0-alpha.15"
 }
 },{}],555:[function(require,module,exports){
 (function (process){
