@@ -56717,7 +56717,7 @@ document.dispatchEvent(evt); // Allow usage of:
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2018-07-26 12:08:36
+ * @Last modified time: 2018-08-03 07:37:08
  */
 'use strict'; // Logger
 
@@ -56785,6 +56785,7 @@ var TweakPublicV1 = require('./rest').TweakPublic.V1;
  * @param       {string}  bridgeData.id                      Button unique identification
  * @param       {string}  bridgeData.windowType              Type of windows where to open the HTML Builder
  * @param       {string}  bridgeData.input                   DOM selector for element where to add the image src once generated
+ * @param       {string}  bridgeData.language                Language for API and Builder
  * @param       {object}  bridgeData.team                    Definitions for Team session
  * @param       {string}  bridgeData.team.clientKey          Team.clientKey for Tweak API Team validation
  * @param       {object}  bridgeData.teamCustomer            Definitions for Team Customer session
@@ -56882,6 +56883,10 @@ Bridge.parseElButton = function (elButton, cb) {
 
   if (elButton.dataset.input) {
     bridgeData.input = elButton.dataset.input;
+  }
+
+  if (elButton.dataset.language) {
+    bridgeData.language = elButton.dataset.language;
   }
 
   if (elButton.dataset.legacy) {
@@ -59061,7 +59066,7 @@ module.exports={
     }
   },
   "env": "development",
-  "version": "1.0.0-alpha.15"
+  "version": "1.0.0-alpha.16"
 }
 },{}],555:[function(require,module,exports){
 (function (process){
@@ -59414,7 +59419,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-07-23 09:14:03
+ * @Last modified time: 2018-08-03 02:04:52
  */
 'use strict';
 
@@ -59455,6 +59460,11 @@ module.exports = {
         'required': ['url']
       }],
       'additionalProperties': false
+    },
+    'language': {
+      'type': 'string',
+      'enum': ['de', 'de_DE', 'en', 'en_GB', 'en_US', 'es', 'es_ES', 'fr', 'fr_FR', 'it', 'it_IT', 'nl', 'nl_NL', 'pt', 'pt_BR'],
+      'default': 'en'
     },
     'team': {
       'type': 'object',
@@ -59638,7 +59648,7 @@ module.exports = {
       'type': 'string'
     }
   },
-  'required': ['id', 'windowType', 'team', 'callbacks', 'uniqueSelector', 'animationCode', 'loading'],
+  'required': ['id', 'windowType', 'language', 'team', 'callbacks', 'uniqueSelector', 'animationCode', 'loading'],
   'additionalProperties': false
 };
 
