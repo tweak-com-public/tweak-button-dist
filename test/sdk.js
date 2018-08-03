@@ -59419,7 +59419,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-08-03 02:04:52
+ * @Last modified time: 2018-08-03 05:07:46
  */
 'use strict';
 
@@ -59463,8 +59463,7 @@ module.exports = {
     },
     'language': {
       'type': 'string',
-      'enum': ['de', 'de_DE', 'en', 'en_GB', 'en_US', 'es', 'es_ES', 'fr', 'fr_FR', 'it', 'it_IT', 'nl', 'nl_NL', 'pt', 'pt_BR'],
-      'default': 'en'
+      'enum': ['de', 'de_DE', 'en', 'en_GB', 'en_US', 'es', 'es_ES', 'fr', 'fr_FR', 'it', 'it_IT', 'nl', 'nl_NL', 'pt', 'pt_BR']
     },
     'team': {
       'type': 'object',
@@ -59648,7 +59647,7 @@ module.exports = {
       'type': 'string'
     }
   },
-  'required': ['id', 'windowType', 'language', 'team', 'callbacks', 'uniqueSelector', 'animationCode', 'loading'],
+  'required': ['id', 'windowType', 'team', 'callbacks', 'uniqueSelector', 'animationCode', 'loading'],
   'additionalProperties': false
 };
 
