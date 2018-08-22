@@ -56717,7 +56717,7 @@ document.dispatchEvent(evt); // Allow usage of:
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-09-21 01:51:07
  * @Last modified by:   Matteo
- * @Last modified time: 2018-08-03 07:37:08
+ * @Last modified time: 2018-08-22 08:07:33
  */
 'use strict'; // Logger
 
@@ -56802,6 +56802,7 @@ var TweakPublicV1 = require('./rest').TweakPublic.V1;
  * @param       {string}  bridgeData.template.id             Template.id from Tweak API
  * @param       {array}   bridgeData.dynamicDatas            Tweak DynamicData array
  * @param       {string}  bridgeData.dynamicDatas[].id       Tweak DynamicData.id
+ * @param       {object}  bridgeData.urls                    List of urls
  * @param       {object}  bridgeData.callbacks               List of callbacks
  * @param       {string}  bridgeData.uniqueSelector          Unique DOM selector
  * @param       {number}  bridgeData.animationCode           Animation code
@@ -57055,6 +57056,12 @@ Bridge.parseElButton = function (elButton, cb) {
 
   if (elButton.dataset.savedproductid) {
     bridgeData.savedProductId = elButton.dataset.savedproductid;
+  }
+
+  bridgeData.urls = {};
+
+  if (elButton.dataset.urlLoginregister) {
+    bridgeData.urls.loginRegister = elButton.dataset.urlLoginregister;
   }
 
   bridgeData.callbacks = {};
@@ -59066,7 +59073,7 @@ module.exports={
     }
   },
   "env": "production",
-  "version": "1.0.0-alpha.16"
+  "version": "1.0.0-alpha.17"
 }
 },{}],555:[function(require,module,exports){
 (function (process){
@@ -59419,7 +59426,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-08-03 05:07:46
+ * @Last modified time: 2018-08-22 08:06:16
  */
 'use strict';
 
@@ -59564,6 +59571,19 @@ module.exports = {
         'additionalProperties': false
       },
       'additionalItems': false
+    },
+    'urls': {
+      'type': 'object',
+      'properties': {
+        // when a login or a registration is required
+        // and when a login or registration is required through legacy API
+        'loginRegister': {
+          'type': 'string',
+          'format': 'url'
+        }
+      },
+      'default': {},
+      'additionalProperties': false
     },
     'callbacks': {
       'type': 'object',
