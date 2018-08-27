@@ -57661,7 +57661,7 @@ module.exports = Bridge;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-02 03:43:24
  * @Last modified by:   Matteo
- * @Last modified time: 2018-08-24 01:56:37
+ * @Last modified time: 2018-08-27 12:53:52
  */
 'use strict'; // Logger
 
@@ -57691,7 +57691,10 @@ module.exports = function (Bridge) {
   // Static vars
   Bridge.BUILDER_STATUS_INIT = 'init';
   Bridge.BUILDER_STATUS_LOADING = 'loading';
-  Bridge.BUILDER_STATUS_READY = 'ready'; // ------------------------------------------------
+  Bridge.BUILDER_STATUS_READY = 'ready';
+  Bridge.BUILDER_WINDOW_OPENED = 'opened';
+  Bridge.BUILDER_WINDOW_CLOSED = 'closed';
+  Bridge.BUILDER_WINDOW_UNKNOWN = 'unknown'; // ------------------------------------------------
   // VARS
 
   Bridge.prototype.vars.builder = {};
@@ -57791,6 +57794,7 @@ module.exports = function (Bridge) {
     var socketPrefix = BuilderConfig.socketPrefix;
     var data = {};
     bridge.vars.builder.status = Bridge.BUILDER_STATUS_LOADING;
+    data.urls = bridge.get('urls');
 
     if (bridge.get('legacy')) {
       data.legacyUserToken = bridge.get('userToken');
@@ -57803,7 +57807,6 @@ module.exports = function (Bridge) {
       data.designId = bridge.get('design.id');
       data.templateId = bridge.get('template.id');
       data.dynamicDatas = bridge.get('dynamicDatas');
-      data.urls = bridge.get('urls');
       bridge.socketSend(socketPrefix, 'data', data);
     }
   };
@@ -57924,9 +57927,10 @@ module.exports = function (Bridge) {
     var data = e.data;
 
     if (bridge.get('callbacks.onLoginRegister')) {
-      // (in legacy mode)
+      var cb = null; // (in legacy mode)
+
       if (bridge.get('legacy')) {
-        window[bridge.get('callbacks.onLoginRegister')](function (legacyUserToken) {
+        cb = function cb(legacyUserToken) {
           if (!legacyUserToken) {
             bridge.socketSend(socketPrefix, 'legacy-authUser', null);
             return;
@@ -57935,41 +57939,53 @@ module.exports = function (Bridge) {
           bridge.socketSend(socketPrefix, 'legacy-authUser', {
             'legacyUserToken': legacyUserToken
           });
-        });
-        return;
+        };
+      } else {
+        cb = function cb(auth) {
+          if (!auth) {
+            bridge.socketSend(socketPrefix, 'authWithAccessToken', null);
+            return;
+          } else if (!bridge.get('teamCustomer.id') && (!auth.teamCustomer || !auth.teamCustomer.id)) {
+            throw new Error('TeamCustomer id must be passed');
+          } else if (!bridge.get('portal.id') && (!auth.portal || !auth.portal.id)) {
+            throw new Error('Portal id must be passed');
+          } // Store TeamCustomer and Portal
+
+
+          var bridgeData = bridge.getData();
+          bridgeData.teamCustomer = extend(true, {}, bridgeData.teamCustomer, auth.teamCustomer);
+          bridgeData.portal = extend(true, {}, bridgeData.portal, auth.portal);
+          bridge.setData(bridgeData);
+          bridge.getTeamCustomerToken(function (err, teamCustomerToken) {
+            if (err) {
+              throw err;
+            }
+
+            if (teamCustomerToken) {
+              var bridgeData = bridge.getData();
+              bridgeData.accessToken = teamCustomerToken.id;
+              bridge.setData(bridgeData);
+            }
+
+            bridge.socketSend(socketPrefix, 'authWithAccessToken', {
+              'accessToken': teamCustomerToken.id
+            });
+          });
+        };
       }
 
-      window[bridge.get('callbacks.onLoginRegister')](function (auth) {
-        if (!auth) {
-          bridge.socketSend(socketPrefix, 'authWithAccessToken', null);
-          return;
-        } else if (!bridge.get('teamCustomer.id') && (!auth.teamCustomer || !auth.teamCustomer.id)) {
-          throw new Error('TeamCustomer id must be passed');
-        } else if (!bridge.get('portal.id') && (!auth.portal || !auth.portal.id)) {
-          throw new Error('Portal id must be passed');
-        } // Store TeamCustomer and Portal
+      if (bridge.get('urls.loginRegister')) {
+        var win = data && data.windowStatus ? data.windowStatus : null;
+        console.log(win, win === Bridge.BUILDER_WINDOW_OPENED, win === Bridge.BUILDER_WINDOW_CLOSED); // Default BUILDER_WINDOW status
 
+        if (win !== Bridge.BUILDER_WINDOW_OPENED && win !== Bridge.BUILDER_WINDOW_CLOSED) {
+          win = Bridge.BUILDER_WINDOW_UNKNOWN;
+        }
 
-        var bridgeData = bridge.getData();
-        bridgeData.teamCustomer = extend(true, {}, bridgeData.teamCustomer, auth.teamCustomer);
-        bridgeData.portal = extend(true, {}, bridgeData.portal, auth.portal);
-        bridge.setData(bridgeData);
-        bridge.getTeamCustomerToken(function (err, teamCustomerToken) {
-          if (err) {
-            throw err;
-          }
-
-          if (teamCustomerToken) {
-            var bridgeData = bridge.getData();
-            bridgeData.accessToken = teamCustomerToken.id;
-            bridge.setData(bridgeData);
-          }
-
-          bridge.socketSend(socketPrefix, 'authWithAccessToken', {
-            'accessToken': teamCustomerToken.id
-          });
-        });
-      });
+        window[bridge.get('callbacks.onLoginRegister')](win, cb.bind(bridge));
+      } else {
+        window[bridge.get('callbacks.onLoginRegister')](cb.bind(bridge));
+      }
     }
   }; // END - ONs
   // ------------------------------------------------
@@ -59074,7 +59090,7 @@ module.exports={
     }
   },
   "env": "stage",
-  "version": "1.0.0-alpha.18"
+  "version": "1.0.0-alpha.19"
 }
 },{}],554:[function(require,module,exports){
 (function (process){
@@ -59427,7 +59443,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-08-22 08:06:16
+ * @Last modified time: 2018-08-27 11:54:19
  */
 'use strict';
 
@@ -59592,10 +59608,17 @@ module.exports = {
         // when a login or a registration is required
         // and when a login or registration is required through legacy API
         'onLoginRegister': {
-          'type': 'string',
-          'jsCallback': {
-            'args': 1
-          }
+          'oneOf': [{
+            'type': 'string',
+            'jsCallback': {
+              'args': 1
+            }
+          }, {
+            'type': 'string',
+            'jsCallback': {
+              'args': 2
+            }
+          }]
         },
         // when button is initialized
         'onInit': {

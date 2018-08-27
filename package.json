@@ -1,6 +1,6 @@
 {
   "name": "tweak-button",
-  "version": "1.0.0-alpha.18",
+  "version": "1.0.0-alpha.19",
   "description": "Tweak Button integration",
   "main": "production/sdk.min.js",
   "keywords": [
