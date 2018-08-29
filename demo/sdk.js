@@ -59090,7 +59090,7 @@ module.exports={
     }
   },
   "env": "demo",
-  "version": "1.0.0-alpha.19"
+  "version": "1.0.0-alpha.20"
 }
 },{}],554:[function(require,module,exports){
 (function (process){
@@ -59443,7 +59443,7 @@ module.exports = Modal;
  * @Author: Matteo Zambon <Matteo>
  * @Date:   2017-10-04 12:59:17
  * @Last modified by:   Matteo
- * @Last modified time: 2018-08-27 11:54:19
+ * @Last modified time: 2018-08-29 12:49:50
  */
 'use strict';
 
@@ -59596,7 +59596,7 @@ module.exports = {
         // and when a login or registration is required through legacy API
         'loginRegister': {
           'type': 'string',
-          'format': 'url'
+          'format': 'uri'
         }
       },
       'default': {},
